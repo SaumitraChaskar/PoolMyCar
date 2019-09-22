@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "814051458011",
+    "firebase_url": "https://authapp-a287e.firebaseio.com",
+    "project_id": "authapp-a287e",
+    "storage_bucket": "authapp-a287e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814051458011:android:ee06e79e0a0717cd",
+        "android_client_info": {
+          "package_name": "com.example.authapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlIpy2qwyago93biyyPNtZqoZXSW-7ZlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814051458011:android:b7e3c1c1dae6804d",
+        "android_client_info": {
+          "package_name": "com.example.bbc_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlIpy2qwyago93biyyPNtZqoZXSW-7ZlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814051458011:android:0ac7d24f04bd2a96",
+        "android_client_info": {
+          "package_name": "com.example.carpool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814051458011-8igufp6t865eo3ud74fapvortch00d6i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carpool",
+            "certificate_hash": "b1cb578cf51b0b3ed42ddc5905113359087ad10a"
+          }
+        },
+        {
+          "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlIpy2qwyago93biyyPNtZqoZXSW-7ZlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814051458011-3oc2qclib0f6kd5v581qgv34cke7s91b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
