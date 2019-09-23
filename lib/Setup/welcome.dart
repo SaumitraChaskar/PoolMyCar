@@ -1,5 +1,4 @@
 
-import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
 import 'package:bbc_login/Setup/card_view.dart';
@@ -43,7 +42,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     minWidth: 200,
                     height: 50,
                     child : RaisedButton(
-                      onPressed:navigateToCardData,
+                      onPressed:navigateToSignIn,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                       child: Text("Offer A Ride"),
                     ),
@@ -55,7 +54,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     minWidth: 200,
                     height: 50,
                     child : RaisedButton(
-                      onPressed:navigateToCardData,
+                      onPressed:navigateToSignIn,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                         child: Text("Book A Ride"),
                     ),
@@ -87,12 +86,6 @@ class _WelcomePageState extends State<WelcomePage> {
   void navigateToSignUp()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> SignUpPage(),fullscreenDialog: true));
-
-  }
-
-  void navigateToData()
-  {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> DataPage(),fullscreenDialog: true));
 
   }
 

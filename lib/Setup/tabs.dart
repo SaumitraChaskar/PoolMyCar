@@ -367,6 +367,14 @@ class _TabPageState extends State<TabPage> {
         'licenseNo':_licenseNo,
         'carRegeNo' : _carRegNo,
       });
+
+      final databaseReference1 = FirebaseDatabase.instance.reference();
+
+      databaseReference1.child("passenger").child(userUid).set({
+        'username':_username,
+        'contactNo':_contactNo,
+        'email':_email,
+      });
     }
   }
 }
