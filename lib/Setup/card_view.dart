@@ -59,10 +59,10 @@ class MyCard extends StatelessWidget{
 
         rideDetails.forEach((k ,v) {
             i++;
-            Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["departure"],k);
+            Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["date"],k,v["time"]);
             rides.add(ride);
 
-            CustomCard c = new CustomCard(title :carOwnerDetails[v["driverUid"]],subtitle:"best rider out there",departure:v["departure"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],rideId: k.toString(),);
+            CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],rideId: k.toString(),date:v["date"],);
             newCards.add(c);
 
         }
@@ -114,19 +114,21 @@ class CustomCard extends StatelessWidget {
 
   CustomCard({
     this.rideId,
-    this.title,
-    this.subtitle,
-    this.departure,
+    this.username,
+    this.preferences,
+    this.time,
     this.pricepp,
     this.source,
     this.dest,
     this.driveruid,
     this.numberofppl,
+    this.date,
   });
 
-  final String title;
-  final String subtitle;
-  final String departure;
+  final String username;
+  final String time;
+  final String date;
+  final String preferences;
   final int pricepp;
   final String source;
   final String dest;
@@ -150,8 +152,8 @@ class CustomCard extends StatelessWidget {
                 ),
                 radius: 35,
               ),
-              title: new Text(title),
-              subtitle: Text(subtitle)
+              title: new Text(username),
+              subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
           new Padding(
@@ -163,11 +165,11 @@ class CustomCard extends StatelessWidget {
                   ),
                   new Padding(
                     padding: new EdgeInsets.all(7.0),
-                    child: new Text("Departure Time: "+ departure.toString() ,style: new TextStyle(fontSize: 15.0),),
+                    child: new Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: new TextStyle(fontSize: 12.0),),
                   ),
                   new Padding(
                     padding: new EdgeInsets.all(7.0),
-                    child: new Text("Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 15.0)),
+                    child: new Text("  Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
                   ),
                 ],
               ),
@@ -212,8 +214,8 @@ class Ride
   final String source;
   final String dest;
   final int pricepp;
-  final String departure;
+  final String time;
   final String rideId;
-
-  Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.departure,this.rideId);
+  final String date;
+  Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.date,this.rideId,this.time);
 }
