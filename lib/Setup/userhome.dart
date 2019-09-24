@@ -1,4 +1,5 @@
 
+import 'package:bbc_login/Setup/AddRide.dart';
 import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'feedback.dart';
 import 'home.dart';
+import 'searchRide.dart';
 
 
 
@@ -103,9 +105,9 @@ class _UserHomePageState extends State<UserHomePage> {
                                 minWidth: 200,
                                 height: 50,
                                 child : RaisedButton(
-                                  onPressed:navigateToCardData,
+                                  onPressed:createRide,
                                   shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                  child: Text("Find A Ride"),
+                                  child: Text("Offer A Ride"),
                                 ),
                               ),
                             );
@@ -120,7 +122,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       minWidth: 200,
                       height: 50,
                       child : RaisedButton(
-                        onPressed:navigateToCardData,
+                        onPressed:navigateToSearchRide,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                         child: Text("Book A Ride"),
                       ),
@@ -153,6 +155,11 @@ class _UserHomePageState extends State<UserHomePage> {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> LoginPage(),fullscreenDialog: true));
   }
 
+  void navigateToSearchRide()
+  {
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> SearchRidePage(),fullscreenDialog: true));
+  }
+
   void navigateToSignUp()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> SignUpPage(),fullscreenDialog: true));
@@ -165,9 +172,10 @@ class _UserHomePageState extends State<UserHomePage> {
 
   }
 
-  void navigateToCardData()
+
+void createRide()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(),fullscreenDialog: true));
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
 
   void navigateToFeedbackPage()

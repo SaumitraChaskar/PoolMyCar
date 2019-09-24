@@ -1,22 +1,31 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class CardViewDataPage extends StatelessWidget {
-  // This widget is the root of your application.
-  CardViewDataPage({Key key}) : super(key: key);
+import 'searchRide.dart';
 
+
+
+class CardViewDataPage extends StatelessWidget {
+
+final SourceDest sd;
+
+  // This widget is the root of your application.
+  CardViewDataPage({Key key,@required this.sd}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home:new MyCard()
+        home:new MyCard(sd : sd),
     );
   }
 }
 class MyCard extends StatelessWidget{
 
+  final SourceDest sd;
 
-  MyCard({Key key}) : super(key: key);
+  MyCard({Key key,@required this.sd}) : super(key: key);
 
   final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
   static final databaseReference = FirebaseDatabase.instance.reference();
@@ -27,19 +36,16 @@ class MyCard extends StatelessWidget{
         var dataCarowner;
         List<Ride> rides = [];
 
-        print("Hey");
 
         await databaseReference.once().then((DataSnapshot snapshot) {
         data = snapshot.value;
         });
 
-        print("Bye");
 
         await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
           dataCarowner = snapshot.value;
         });
 
-        print("Bye");
         print(dataCarowner);
         var carOwnerDetails = new Map();
 
@@ -50,7 +56,6 @@ class MyCard extends StatelessWidget{
           print(k);
         });
 
-        print("Bye");
 
         var rideDetails = data['rides'];
 
@@ -62,14 +67,17 @@ class MyCard extends StatelessWidget{
             Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["date"],k,v["time"]);
             rides.add(ride);
 
-            CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],rideId: k.toString(),date:v["date"],);
-            newCards.add(c);
+            if(sd.dest == v["dest"] && sd.source == v["source"]){
+              print(v);
+              print("After ride");
+              CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+              newCards.add(c);
+            }
+            else{
+            }
 
         }
     );
-
-    numRides = i;
-    print(numRides);
 
     return newCards;
   }
@@ -136,13 +144,36 @@ class CustomCard extends StatelessWidget {
   final int numberofppl;
   final String rideId;
 
+  Future<int> _isUser() async{
 
+    print("Jh;");
 
+    var dataCarowner;
+    final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+
+    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+          dataCarowner = snapshot.value;
+        });
+
+        print(dataCarowner);
+
+        print("hello");
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        dataCarowner.forEach((k,v) {
+          print("VALUE OF K: $k and UID: ${user.uid}");
+          if(k == user.uid.toString()){
+            return 1;
+          }
+          
+        }
+        );
+        
+  }
 
 
   @override
-  Widget build(BuildContext context) {
-    return  new Card(
+  Widget build(BuildContext context)  {
+      return  new Card(
       child: new Column(
         children: <Widget>[
           new ListTile(
@@ -191,9 +222,57 @@ class CustomCard extends StatelessWidget {
                   child: new Text('To: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
                 ),
                 Spacer(),
+                new Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Container(
+                    child: FutureBuilder(
+                      future: _isUser(),
+              builder:(BuildContext context ,AsyncSnapshot snapshot ){
+                if(snapshot.data == 1)
+                {
+                  return new RaisedButton(
+                  //heroTag: rideId.toString(),
+                    onPressed:(){
+                      deleteRide(rideId);
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text("Deleted ride!"),
+                          );
+                        },
+                      );
+                    },
+                  child: Text("Delete"),
+                );
+                }
+                else {
+                      return new Container(
+                      );
+                }
+              }
+
+                    ),
+                  )
+                  
+                ),
                 new FloatingActionButton(
-                  heroTag: rideId.toString(),
-                    onPressed:(){},
+                  //heroTag: rideId.toString(),
+                    onPressed:(){
+                      writeBooking(rideId);
+                      return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          // Retrieve the text the user has entered by using the
+          // TextEditingController.
+          content: Text("Booking created!"),
+        );
+      },
+    );
+                    },
                     child: Text("Book"),
                 ),
               ],
@@ -203,6 +282,30 @@ class CustomCard extends StatelessWidget {
         ],
       ),
     );
+    
+  }
+
+  Future writeBooking(rideId)
+  async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final ridedbref = FirebaseDatabase.instance.reference().child("bookings");
+    String k = ridedbref.push().key;
+    ridedbref.child(k).set({
+      'ride_id':rideId,
+      'user_id': user.uid,
+      'timestamp created': DateTime.now().millisecondsSinceEpoch,
+    });
+    
+  }
+
+  Future deleteRide(rideId)
+  async {
+      final ridedbref = FirebaseDatabase.instance.reference().child("rides");
+      print("deleteride : id"+ rideId.toString());
+      await ridedbref.child(rideId).remove().then((_) {
+      print('Transaction  committed.');
+    });
+      
   }
 }
 
@@ -218,4 +321,12 @@ class Ride
   final String rideId;
   final String date;
   Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.date,this.rideId,this.time);
+}
+
+class SourceDest
+{
+  String source;
+  String dest;
+
+  SourceDest(this.source,this.dest);
 }

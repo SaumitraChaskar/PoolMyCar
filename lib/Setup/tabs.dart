@@ -66,6 +66,7 @@ class _TabPageState extends State<TabPage> {
                                     borderRadius: new BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Email '),
+                        
                             ),
                           ),
 
@@ -88,7 +89,7 @@ class _TabPageState extends State<TabPage> {
                                     borderRadius: new BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Password '),
-                              obscureText: true,
+                                  obscureText: true,
                             ),
                           ),
                           Padding(
