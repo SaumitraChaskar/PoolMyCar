@@ -137,14 +137,6 @@ class _UserHomePageState extends State<UserHomePage> {
                         child: Text("Logout"),
                       ),
                     ),
-//                RaisedButton(
-//                  onPressed:navigateToTabs,
-//                  child: Text("Tabs"),
-//                ),
-//                RaisedButton(
-//                  onPressed:navigateToHome,
-//                  child: Text("Home"),
-//                ),
                     Padding(
                       padding: EdgeInsets.symmetric(),
                     ),
