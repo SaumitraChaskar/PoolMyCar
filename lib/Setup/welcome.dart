@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'feedback.dart';
 import 'home.dart';
+import 'searchRide.dart';
 
 
 
@@ -98,7 +99,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   void navigateToCardData()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(),fullscreenDialog: true));
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> SearchRidePage(),fullscreenDialog: true));
   }
 
   void navigateToFeedbackPage()

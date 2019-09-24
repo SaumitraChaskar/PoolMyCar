@@ -2,21 +2,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class CardViewDataPage extends StatelessWidget {
-  // This widget is the root of your application.
-  CardViewDataPage({Key key}) : super(key: key);
 
+
+class CardViewDataPage extends StatelessWidget {
+
+final SourceDest sd;
+
+  // This widget is the root of your application.
+  CardViewDataPage({Key key,@required this.sd}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home:new MyCard()
+        home:new MyCard(sd : sd),
     );
   }
 }
 class MyCard extends StatelessWidget{
 
+  final SourceDest sd;
 
-  MyCard({Key key}) : super(key: key);
+  MyCard({Key key,@required this.sd}) : super(key: key);
 
   final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
   static final databaseReference = FirebaseDatabase.instance.reference();
@@ -38,6 +44,8 @@ class MyCard extends StatelessWidget{
         await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
           dataCarowner = snapshot.value;
         });
+
+
 
         print("Bye");
         print(dataCarowner);
@@ -61,9 +69,15 @@ class MyCard extends StatelessWidget{
             i++;
             Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["departure"],k);
             rides.add(ride);
-
+            print(sd.source+" ################### "+sd.dest);
+            if(sd.dest == v["dest"] && sd.source == v["source"]){
+            
             CustomCard c = new CustomCard(title :carOwnerDetails[v["driverUid"]],subtitle:"best rider out there",departure:v["departure"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],rideId: k.toString(),);
             newCards.add(c);
+            }
+            else{
+              print('********************');
+            }
 
         }
     );
@@ -216,4 +230,12 @@ class Ride
   final String rideId;
 
   Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.departure,this.rideId);
+}
+
+class SourceDest
+{
+  String source;
+  String dest;
+
+  SourceDest(this.source,this.dest);
 }
