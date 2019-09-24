@@ -1,6 +1,9 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+
+import 'searchRide.dart';
 
 
 
@@ -33,21 +36,16 @@ class MyCard extends StatelessWidget{
         var dataCarowner;
         List<Ride> rides = [];
 
-        print("Hey");
 
         await databaseReference.once().then((DataSnapshot snapshot) {
         data = snapshot.value;
         });
 
-        print("Bye");
 
         await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
           dataCarowner = snapshot.value;
         });
 
-
-
-        print("Bye");
         print(dataCarowner);
         var carOwnerDetails = new Map();
 
@@ -58,7 +56,6 @@ class MyCard extends StatelessWidget{
           print(k);
         });
 
-        print("Bye");
 
         var rideDetails = data['rides'];
 
@@ -67,23 +64,20 @@ class MyCard extends StatelessWidget{
 
         rideDetails.forEach((k ,v) {
             i++;
-            Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["departure"],k);
+            Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["date"],k,v["time"]);
             rides.add(ride);
-            print(sd.source+" ################### "+sd.dest);
+
             if(sd.dest == v["dest"] && sd.source == v["source"]){
-            
-            CustomCard c = new CustomCard(title :carOwnerDetails[v["driverUid"]],subtitle:"best rider out there",departure:v["departure"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],rideId: k.toString(),);
-            newCards.add(c);
+              print(v);
+              print("After ride");
+              CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+              newCards.add(c);
             }
             else{
-              print('********************');
             }
 
         }
     );
-
-    numRides = i;
-    print(numRides);
 
     return newCards;
   }
@@ -128,19 +122,21 @@ class CustomCard extends StatelessWidget {
 
   CustomCard({
     this.rideId,
-    this.title,
-    this.subtitle,
-    this.departure,
+    this.username,
+    this.preferences,
+    this.time,
     this.pricepp,
     this.source,
     this.dest,
     this.driveruid,
     this.numberofppl,
+    this.date,
   });
 
-  final String title;
-  final String subtitle;
-  final String departure;
+  final String username;
+  final String time;
+  final String date;
+  final String preferences;
   final int pricepp;
   final String source;
   final String dest;
@@ -148,13 +144,36 @@ class CustomCard extends StatelessWidget {
   final int numberofppl;
   final String rideId;
 
+  Future<int> _isUser() async{
 
+    print("Jh;");
 
+    var dataCarowner;
+    final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+
+    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+          dataCarowner = snapshot.value;
+        });
+
+        print(dataCarowner);
+
+        print("hello");
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        dataCarowner.forEach((k,v) {
+          print("VALUE OF K: $k and UID: ${user.uid}");
+          if(k == user.uid.toString()){
+            return 1;
+          }
+          
+        }
+        );
+        
+  }
 
 
   @override
-  Widget build(BuildContext context) {
-    return  new Card(
+  Widget build(BuildContext context)  {
+      return  new Card(
       child: new Column(
         children: <Widget>[
           new ListTile(
@@ -164,8 +183,8 @@ class CustomCard extends StatelessWidget {
                 ),
                 radius: 35,
               ),
-              title: new Text(title),
-              subtitle: Text(subtitle)
+              title: new Text(username),
+              subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
           new Padding(
@@ -177,11 +196,11 @@ class CustomCard extends StatelessWidget {
                   ),
                   new Padding(
                     padding: new EdgeInsets.all(7.0),
-                    child: new Text("Departure Time: "+ departure.toString() ,style: new TextStyle(fontSize: 15.0),),
+                    child: new Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: new TextStyle(fontSize: 12.0),),
                   ),
                   new Padding(
                     padding: new EdgeInsets.all(7.0),
-                    child: new Text("Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 15.0)),
+                    child: new Text("  Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
                   ),
                 ],
               ),
@@ -203,9 +222,57 @@ class CustomCard extends StatelessWidget {
                   child: new Text('To: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
                 ),
                 Spacer(),
+                new Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Container(
+                    child: FutureBuilder(
+                      future: _isUser(),
+              builder:(BuildContext context ,AsyncSnapshot snapshot ){
+                if(snapshot.data == 1)
+                {
+                  return new RaisedButton(
+                  //heroTag: rideId.toString(),
+                    onPressed:(){
+                      deleteRide(rideId);
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text("Deleted ride!"),
+                          );
+                        },
+                      );
+                    },
+                  child: Text("Delete"),
+                );
+                }
+                else {
+                      return new Container(
+                      );
+                }
+              }
+
+                    ),
+                  )
+                  
+                ),
                 new FloatingActionButton(
-                  heroTag: rideId.toString(),
-                    onPressed:(){},
+                  //heroTag: rideId.toString(),
+                    onPressed:(){
+                      writeBooking(rideId);
+                      return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          // Retrieve the text the user has entered by using the
+          // TextEditingController.
+          content: Text("Booking created!"),
+        );
+      },
+    );
+                    },
                     child: Text("Book"),
                 ),
               ],
@@ -215,6 +282,30 @@ class CustomCard extends StatelessWidget {
         ],
       ),
     );
+    
+  }
+
+  Future writeBooking(rideId)
+  async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final ridedbref = FirebaseDatabase.instance.reference().child("bookings");
+    String k = ridedbref.push().key;
+    ridedbref.child(k).set({
+      'ride_id':rideId,
+      'user_id': user.uid,
+      'timestamp created': DateTime.now().millisecondsSinceEpoch,
+    });
+    
+  }
+
+  Future deleteRide(rideId)
+  async {
+      final ridedbref = FirebaseDatabase.instance.reference().child("rides");
+      print("deleteride : id"+ rideId.toString());
+      await ridedbref.child(rideId).remove().then((_) {
+      print('Transaction  committed.');
+    });
+      
   }
 }
 
@@ -226,10 +317,10 @@ class Ride
   final String source;
   final String dest;
   final int pricepp;
-  final String departure;
+  final String time;
   final String rideId;
-
-  Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.departure,this.rideId);
+  final String date;
+  Ride(this.index,this.numberofppl,this.driverUid,this.source,this.dest,this.pricepp,this.date,this.rideId,this.time);
 }
 
 class SourceDest

@@ -1,4 +1,5 @@
 
+import 'package:bbc_login/Setup/AddRide.dart';
 import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'feedback.dart';
 import 'home.dart';
+import 'searchRide.dart';
 
 
 
@@ -22,6 +24,7 @@ class UserHomePage extends StatefulWidget {
   _UserHomePageState createState() => _UserHomePageState();
 
 }
+
 
 class _UserHomePageState extends State<UserHomePage> {
 
@@ -42,6 +45,27 @@ class _UserHomePageState extends State<UserHomePage> {
     });
   }
 
+
+  final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+
+  Future<int> _checkIfCarOwner() async{
+
+    var dataCarowner;
+    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+      dataCarowner = snapshot.value;
+    });
+
+    int result = 0;
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    dataCarowner.forEach((k,v){
+      if(k.toString() == user.uid.toString()){
+        result = 1;
+      }
+    });
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -49,7 +73,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('PoolMyCar' + "    Welcome:" + username),
+          title: Text('PoolMyCar' + "           Welcome:" + username),
         ),
         body: new Center(
             child: new Container(
@@ -63,13 +87,32 @@ class _UserHomePageState extends State<UserHomePage> {
                 margin: EdgeInsets.fromLTRB(100,325,100,0),
                 child:new ListView(
                   children: <Widget>[
-                    ButtonTheme(
-                      minWidth: 200,
-                      height: 50,
-                      child : RaisedButton(
-                        onPressed:navigateToCardData,
-                        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                        child: Text("Offer A Ride"),
+                    Container(
+                      child: FutureBuilder(
+                        future: _checkIfCarOwner(),
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          if(snapshot.data == 0)
+                          {
+                            return Container(
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                              ),
+                            );
+                          }
+                          else{
+                            return Container(
+                              child: ButtonTheme(
+                                minWidth: 200,
+                                height: 50,
+                                child : RaisedButton(
+                                  onPressed:createRide,
+                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                  child: Text("Offer A Ride"),
+                                ),
+                              ),
+                            );
+                          }
+                        }
                       ),
                     ),
                     Padding(
@@ -79,9 +122,21 @@ class _UserHomePageState extends State<UserHomePage> {
                       minWidth: 200,
                       height: 50,
                       child : RaisedButton(
-                        onPressed:navigateToCardData,
+                        onPressed:navigateToSearchRide,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                         child: Text("Book A Ride"),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(30),
+                    ),
+                    ButtonTheme(
+                      minWidth: 25,
+                      height: 25,
+                      child : RaisedButton(
+                        onPressed:navigateToHome,
+                        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                        child: Text("Logout"),
                       ),
                     ),
 //                RaisedButton(
@@ -108,6 +163,11 @@ class _UserHomePageState extends State<UserHomePage> {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> LoginPage(),fullscreenDialog: true));
   }
 
+  void navigateToSearchRide()
+  {
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> SearchRidePage(),fullscreenDialog: true));
+  }
+
   void navigateToSignUp()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> SignUpPage(),fullscreenDialog: true));
@@ -120,9 +180,10 @@ class _UserHomePageState extends State<UserHomePage> {
 
   }
 
-  void navigateToCardData()
+
+void createRide()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(),fullscreenDialog: true));
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
 
   void navigateToFeedbackPage()

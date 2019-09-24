@@ -69,6 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               borderRadius: new BorderRadius.circular(12.0),
                             ),
                             labelText: ' Password '),
+                        obscureText: true,
                       ),
                     ),
                     Padding(

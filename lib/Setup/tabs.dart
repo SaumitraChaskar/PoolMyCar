@@ -66,6 +66,7 @@ class _TabPageState extends State<TabPage> {
                                     borderRadius: new BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Email '),
+                        
                             ),
                           ),
 
@@ -88,6 +89,7 @@ class _TabPageState extends State<TabPage> {
                                     borderRadius: new BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Password '),
+                                  obscureText: true,
                             ),
                           ),
                           Padding(
@@ -200,6 +202,7 @@ class _TabPageState extends State<TabPage> {
                                       borderRadius: new BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Password '),
+                                obscureText: true,
                               ),
                             ),
                             Padding(
@@ -366,6 +369,14 @@ class _TabPageState extends State<TabPage> {
         'email':_email,
         'licenseNo':_licenseNo,
         'carRegeNo' : _carRegNo,
+      });
+
+      final databaseReference1 = FirebaseDatabase.instance.reference();
+
+      databaseReference1.child("passenger").child(userUid).set({
+        'username':_username,
+        'contactNo':_contactNo,
+        'email':_email,
       });
     }
   }

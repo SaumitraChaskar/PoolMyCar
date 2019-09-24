@@ -51,22 +51,23 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding : const EdgeInsets.all(10),
                   child: TextFormField(
+                    obscureText: true,
                     validator:(input){
                       if(input.length < 6) {
-                        return 'Password not strong';
+                        return 'Password not correct';
                       }
                       return null;
                     } ,
                     onSaved: (input) => _password = input,
                     decoration: new InputDecoration(
-                        fillColor: Colors.lightBlueAccent,
-                        filled: true,
-                        contentPadding: new EdgeInsets.fromLTRB(
-                            10.0, 30.0, 10.0, 10.0),
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(12.0),
-                        ),
-                        labelText: ' Password '),
+                      fillColor: Colors.lightBlueAccent,
+                      filled: true,
+                      contentPadding: new EdgeInsets.fromLTRB(
+                          10.0, 30.0, 10.0, 10.0),
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(12.0),
+                      ),
+                      labelText: ' Password '),
                   ),
                 ),
 
