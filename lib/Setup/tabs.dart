@@ -323,7 +323,6 @@ class _TabPageState extends State<TabPage> {
         AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
         FirebaseUser user = result.user;
         user.sendEmailVerification();
-        Navigator.of(context).pop();
         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
         userUid = user.uid;
       }
@@ -352,7 +351,6 @@ class _TabPageState extends State<TabPage> {
         AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
         FirebaseUser user = result.user;
         user.sendEmailVerification();
-        Navigator.of(context).pop();
         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
         userUid = user.uid;
       }

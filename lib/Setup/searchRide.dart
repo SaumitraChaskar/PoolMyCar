@@ -94,7 +94,6 @@ class _SearchRidePageState extends State<SearchRidePage> {
   
 void goToViewRide()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text)),fullscreenDialog: true));
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("2019-26-09 10:00:00"))),fullscreenDialog: true));
   }
-
 }

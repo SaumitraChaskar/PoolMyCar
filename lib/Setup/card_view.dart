@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'searchRide.dart';
-
+import 'package:date_format/date_format.dart';
 
 
 class CardViewDataPage extends StatelessWidget {
@@ -46,41 +46,33 @@ class MyCard extends StatelessWidget{
           dataCarowner = snapshot.value;
         });
 
-        print(dataCarowner);
         var carOwnerDetails = new Map();
 
         dataCarowner.forEach((k ,v){
-          print(k);
-          print(v["username"]);
           carOwnerDetails[k] = v["username"];
-          print(k);
         });
 
 
         var rideDetails = data['rides'];
 
         List<CustomCard> newCards = [];
-        int i = 0;
 
         rideDetails.forEach((k ,v) {
-            i++;
-            Ride ride = Ride(i,v["numberofppl"],v["driverUid"],v["dest"],v["source"],v["pricepp"],v["date"],k,v["time"]);
-            rides.add(ride);
-
-            if(sd.dest == v["dest"] && sd.source == v["source"]){
-              print(v);
-              print("After ride");
+            var source = sd.source.toString();
+            var dest  = sd.dest.toString();
+            DateTime date = sd.dateTime;
+            DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
+            print(date.difference(rideDate));
+            if( date.isAfter(rideDate) && source == v["source"] && dest == v["dest"] )
+            {
               CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
               newCards.add(c);
             }
-            else{
-            }
+          }
 
+        );
+        return newCards;
         }
-    );
-
-    return newCards;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +88,10 @@ class MyCard extends StatelessWidget{
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == null)
                 {
+                  print(snapshot.data);
                   return Container(
                     child: Center(
-                        child:Text("Loading...")
+                        child:Text("Loading...Screen")
                     ),
                   );
                 }
@@ -145,29 +138,7 @@ class CustomCard extends StatelessWidget {
   final String rideId;
 
   Future<int> _isUser() async{
-
-    print("Jh;");
-
-    var dataCarowner;
-    final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
-
-    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
-          dataCarowner = snapshot.value;
-        });
-
-        print(dataCarowner);
-
-        print("hello");
-        FirebaseUser user = await FirebaseAuth.instance.currentUser();
-        dataCarowner.forEach((k,v) {
-          print("VALUE OF K: $k and UID: ${user.uid}");
-          if(k == user.uid.toString()){
-            return 1;
-          }
-          
-        }
-        );
-        
+        return 1;
   }
 
 
@@ -230,11 +201,10 @@ class CustomCard extends StatelessWidget {
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == 1)
                 {
-                  return new RaisedButton(
-                  //heroTag: rideId.toString(),
-                    onPressed:(){
-                      deleteRide(rideId);
-                      return showDialog(
+                      return new RaisedButton(
+                        onPressed:(){
+                        deleteRide(rideId);
+                        return showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
@@ -245,7 +215,7 @@ class CustomCard extends StatelessWidget {
                         },
                       );
                     },
-                  child: Text("Delete"),
+                            child: Text("Delete"),
                 );
                 }
                 else {
@@ -263,12 +233,12 @@ class CustomCard extends StatelessWidget {
                     onPressed:(){
                       writeBooking(rideId);
                       return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          // Retrieve the text the user has entered by using the
-          // TextEditingController.
-          content: Text("Booking created!"),
+                        context: context,
+                        builder: (context) {
+                            return AlertDialog(
+                              // Retrieve the text the user has entered by using the
+                              // TextEditingController.
+                              content: Text("Booking created!"),
         );
       },
     );
@@ -327,6 +297,7 @@ class SourceDest
 {
   String source;
   String dest;
+  DateTime dateTime = DateTime.parse("2019-09-26 10:00:00");
 
-  SourceDest(this.source,this.dest);
+  SourceDest(this.source,this.dest,this.dateTime);
 }
