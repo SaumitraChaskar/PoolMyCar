@@ -32,7 +32,7 @@ class _UserPageState extends State<UserPage> {
                   body: new Icon(Icons.home),
               ),
               ),
-              new Container(
+              new Container(  
                 child:Scaffold(
                   appBar: AppBar(
                       title: Text("My Profile")

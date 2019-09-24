@@ -1,4 +1,5 @@
 
+import 'package:bbc_login/Setup/AddRide.dart';
 import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
@@ -103,9 +104,9 @@ class _UserHomePageState extends State<UserHomePage> {
                                 minWidth: 200,
                                 height: 50,
                                 child : RaisedButton(
-                                  onPressed:navigateToCardData,
+                                  onPressed:createRide,
                                   shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                  child: Text("Find A Ride"),
+                                  child: Text("Offer A Ride"),
                                 ),
                               ),
                             );
@@ -176,6 +177,11 @@ class _UserHomePageState extends State<UserHomePage> {
   void navigateToCardData()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(),fullscreenDialog: true));
+  }
+
+void createRide()
+  {
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
 
   void navigateToFeedbackPage()
