@@ -47,19 +47,19 @@ class FindRidePageState extends State<FindRidePage> {
       appBar: new AppBar(
         title: Text("PoolMyCar"),
       ),
-      body: Container(
-      padding: EdgeInsets.all(25.0),
-      child: SingleChildScrollView(
-        child: Column(
-        children: <Widget>[
-          TextFormField(
-            autofocus: false,
-            decoration: InputDecoration(
-          labelText: 'Enter starting point',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          ),
-          validator: (value) {
-          if (value.isEmpty) {
+        body: Container(
+        padding: EdgeInsets.all(25.0),
+          child: SingleChildScrollView(
+            child: Column(
+            children: <Widget>[
+                TextFormField(
+                autofocus: false,
+                decoration: InputDecoration(
+                labelText: 'Enter starting point',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              ),
+            validator: (value) {
+            if (value.isEmpty) {
             return 'Please enter some text';
           }
           return null;
@@ -67,7 +67,7 @@ class FindRidePageState extends State<FindRidePage> {
   controller: myController,
 
 ),
-          TextFormField(
+                TextFormField(
             autofocus: false,
             decoration: InputDecoration(
           labelText: 'Enter destination',
