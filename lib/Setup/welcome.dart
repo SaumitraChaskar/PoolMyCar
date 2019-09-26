@@ -1,7 +1,6 @@
 
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
-import 'package:bbc_login/Setup/card_view.dart';
 import 'package:bbc_login/Setup/tabs.dart';
 import 'package:flutter/material.dart';
 

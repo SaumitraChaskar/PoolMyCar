@@ -1,10 +1,11 @@
-import 'dart:convert';
 
+import 'package:date_format/date_format.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'card_view.dart';
+import 'package:intl/intl.dart';
 
 class SearchRidePage extends StatefulWidget {
   // This widget is the root of your application.
@@ -18,8 +19,11 @@ class _SearchRidePageState extends State<SearchRidePage> {
 
   static final sourceController = TextEditingController();
   static final destController = TextEditingController();
+  final myController3 = TextEditingController();
+  final timeController = TextEditingController();
+  final dateformat = DateFormat("yyyy-dd-MM");
+  final timeformat = DateFormat("HH:mm");
   final dbRideRef = FirebaseDatabase.instance.reference().child('rides');
-
 
   @override
   Widget build(BuildContext context){
@@ -107,7 +111,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
 
                               print (_mySelectionSource);
                             },
-                            items: _myJson.map((Map map) {
+                            items: _myJson.map((Map map) {                              
                               return new DropdownMenuItem<String>(
                                 value: map["source"].toString(),
                                 child: new Text(
@@ -144,6 +148,34 @@ class _SearchRidePageState extends State<SearchRidePage> {
                   }
               ),
             ),
+
+            SizedBox(height: 20,),
+
+            Text('Date of Ride: (${dateformat.pattern})'),
+            DateTimeField(
+              format: dateformat,
+              onShowPicker: (context, currentValue) {
+              return showDatePicker(
+                context: context,
+                firstDate: DateTime.now().subtract(Duration(days: 1)),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days:30)));
+                },
+                controller: myController3,
+              ),
+
+            Text('Time of ride : (${timeformat.pattern})'),
+            DateTimeField(
+              format: timeformat,
+              onShowPicker: (context, currentValue) async {
+                final time = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                );
+                return DateTimeField.convert(time);
+              },
+              controller: timeController,
+            ),
           ],
         )
       ),
@@ -153,6 +185,6 @@ class _SearchRidePageState extends State<SearchRidePage> {
   
 void goToViewRide()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("2019-26-09 10:00:00"))),fullscreenDialog: true));
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
   }
 }

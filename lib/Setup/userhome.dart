@@ -3,7 +3,6 @@ import 'package:bbc_login/Setup/AddRide.dart';
 import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
-import 'package:bbc_login/Setup/card_view.dart';
 import 'package:bbc_login/Setup/tabs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';

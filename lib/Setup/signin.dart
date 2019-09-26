@@ -1,7 +1,6 @@
 import 'package:bbc_login/Setup/userpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bbc_login/Pages/home.dart';
 
 class LoginPage extends StatefulWidget {
 
