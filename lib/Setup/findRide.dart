@@ -43,6 +43,16 @@ class FindRidePageState extends State<FindRidePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    String _mySelection;
+    List<Map> _myJson;
+
+    List<Map> _getDataForSource()
+    {
+         _myJson = [{"id":0,"name":"<New>"},{"id":1,"name":"Test Practice"}];
+    }
+
+
     return new Scaffold(
       appBar: new AppBar(
         title: Text("PoolMyCar"),
@@ -83,22 +93,41 @@ class FindRidePageState extends State<FindRidePage> {
 ),
 
 
-RaisedButton(
-  child: Text('Find ride'),
-  onPressed: (){
-    findRide();
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          // Retrieve the text the user has entered by using the
-          // TextEditingController.
-          content: Text("Ride created!"),
+                RaisedButton(
+                      child: Text('Find ride'),
+                  onPressed: (){
+                  findRide();
+                  return showDialog(
+                        context: context,
+                        builder: (context) {
+                        return AlertDialog(
+                            content: Text("Ride created!"),
         );
       },
     );
   },
 ),
+              new DropdownButton<String>(
+                isDense: true,
+                hint: new Text("Select"),
+                value: _mySelection,
+                onChanged: (String newValue) {
+
+                  setState(() {
+                    _mySelection = newValue;
+                  });
+
+                  print (_mySelection);
+                },
+                items: _myJson.map((Map map) {
+                  return new DropdownMenuItem<String>(
+                    value: map["id"].toString(),
+                    child: new Text(
+                      map["name"],
+                    ),
+                  );
+                }).toList(),
+              ),
          ] ),
     )
     )

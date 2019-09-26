@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,32 +20,39 @@ class _SearchRidePageState extends State<SearchRidePage> {
   static final destController = TextEditingController();
   final dbRideRef = FirebaseDatabase.instance.reference().child('rides');
 
-  
-
-
-//   Future<Map> _getSourceDest(sourceController,destController) async {
-
-//     var rideData;
-//     await dbRideRef.once().then((DataSnapshot snapshot) {
-//           rideData = snapshot.value;
-//         });
-
-//     Map SourceData = new Map();
-
-//     rideData.forEach((k,v){
-      
-//       if(v["source"] == sourceController.text && v["destination"] == destController.text)
-//       {
-//         SourceData[]
-//       }
-
-
-//     });
-
-//   }
 
   @override
   Widget build(BuildContext context){
+
+
+    String _mySelectionSource;
+    String _mySelectionDest;
+
+
+    List<Map> _myJson = [];
+
+    Future<List<Map>> _getDataForSource() async
+    {
+      final databaseReferenceRides = FirebaseDatabase.instance.reference().child("rides");
+      var data;
+
+      await databaseReferenceRides.once().then((DataSnapshot snapshot) {
+        data = snapshot.value;
+      });
+
+      print(_myJson);
+      data.forEach((key,ride){
+        print(ride);
+        _myJson.add(ride);
+      });
+
+      print(_myJson);
+//      _myJson = [{"id":0,"name":"<New>"},{"id":1,"name":"Test Practice"}];
+      return _myJson;
+    }
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('PoolMyCar'),
@@ -72,19 +81,69 @@ class _SearchRidePageState extends State<SearchRidePage> {
             SizedBox(
               height: 50,
             ),
-            // FutureBuilder(
-            //   future: dbRideRef.orderByChild('source').equalTo('${sourceController.text}').once(),
-            //   builder: (BuildContext context, AsyncSnapshot snapshot){
-            //     if(snapshot.hasData){
-            //       var dataFrame = snapshot.data;
-            //       var mappedFrame = dataFrame.value;
+            new Container(
+              child: FutureBuilder(
+                  future: _getDataForSource(),
+                  builder:(BuildContext context ,AsyncSnapshot snapshot ){
+                    if(snapshot.data == null)
+                      {
+                        return Container(
+                          child: Text("Loading Destinations"),
+                        );
+                      }
+                    else{
+                      return Column(
+                        children:<Widget>[
+                          new DropdownButton<String>(
+                            isDense: true,
+                            hint: new Text("Source"),
+                            value: _mySelectionSource,
+                            onChanged: (String newValue) {
 
-            //       //return Text(mappedFrame.toString());
-            //     }else{
-            //       return Text('No data found');
-            //     }
-            //   }
-            // ),
+                              setState(() {
+                                _mySelectionSource = newValue;
+                                sourceController.text = _mySelectionSource;
+                              });
+
+                              print (_mySelectionSource);
+                            },
+                            items: _myJson.map((Map map) {
+                              return new DropdownMenuItem<String>(
+                                value: map["source"].toString(),
+                                child: new Text(
+                                  map["source"],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          new DropdownButton<String>(
+                            isDense: true,
+                            hint: new Text("Destination"),
+                            value: _mySelectionDest,
+                            onChanged: (String newValue) {
+
+                              setState(() {
+                                _mySelectionDest = newValue;
+                                destController.text = _mySelectionDest;
+                              });
+
+                              print (_mySelectionDest);
+                            },
+                            items: _myJson.map((Map map) {
+                              return new DropdownMenuItem<String>(
+                                value: map["dest"].toString(),
+                                child: new Text(
+                                  map["dest"],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ]
+                      );
+                    }
+                  }
+              ),
+            ),
           ],
         )
       ),

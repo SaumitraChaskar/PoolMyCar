@@ -60,14 +60,6 @@ class _WelcomePageState extends State<WelcomePage> {
                         child: Text("Book A Ride"),
                     ),
                   ),
-//                RaisedButton(
-//                  onPressed:navigateToTabs,
-//                  child: Text("Tabs"),
-//                ),
-//                RaisedButton(
-//                  onPressed:navigateToHome,
-//                  child: Text("Home"),
-//                ),
                   Padding(
                     padding: EdgeInsets.symmetric(),
                   ),
