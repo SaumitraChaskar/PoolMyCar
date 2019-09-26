@@ -1,11 +1,15 @@
 
+import 'dart:collection';
+
+import 'package:bbc_login/Setup/userhome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'searchRide.dart';
 import 'package:date_format/date_format.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+//import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class CardViewDataPage extends StatelessWidget {
 
@@ -52,6 +56,18 @@ class MyCard extends StatelessWidget{
           carOwnerDetails[k] = v["username"];
         });
 
+        final databaseReferencePassengerStop = FirebaseDatabase.instance.reference().child("bookings");
+        var dataBookings;
+        await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+          dataBookings = snapshot.value;
+        });
+
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        var userUid = user.uid;
+
+
+
+
 
         var rideDetails = data['rides'];
 
@@ -62,11 +78,30 @@ class MyCard extends StatelessWidget{
             var dest  = sd.dest.toString();
             DateTime date = sd.dateTime;
             DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
-            print(date.difference(rideDate));
-            if( date.isAfter(rideDate) && source == v["source"] && dest == v["dest"] )
+            if( date.isAfter(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 )
             {
-              CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
-              newCards.add(c);
+              var flag = 0;
+              if(v["passengers"] != null){
+                print(userUid.toString());
+                v["passengers"].forEach((key,passenger)
+                {
+                  if(userUid.toString() == passenger.toString())
+                  {
+                      flag = 1;
+                  }
+                });
+                if(flag == 0)
+                  {
+                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+                    newCards.add(c);
+
+                  }
+              }
+              else
+                {
+                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+                  newCards.add(c);
+                }
             }
           }
 
@@ -88,18 +123,34 @@ class MyCard extends StatelessWidget{
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == null)
                 {
-                  print(snapshot.data);
                   return Container(
                     child: Center(
-                        child:Text("Loading...Screen")
+                        child:Text("Please wait wheels are rolling  ....")
                     ),
                   );
                 }
                 else {
-                      return new Container(
-                        child: ListView(
-                          children: snapshot.data,
-                        )
+                      return new Column(
+                        children: <Widget>[
+                      Card(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const ListTile(
+                            leading: Icon(Icons.album),
+                            title: Text('Book Your Rides Here !'),
+                            subtitle: Text('Travel to Unravel'),
+                          ),
+                        ],
+                      ),
+                ),
+                          Expanded(
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: snapshot.data,
+                              )
+                          )
+                        ],
                       );
                 }
               },
@@ -138,8 +189,27 @@ class CustomCard extends StatelessWidget {
   final String rideId;
 
   Future<int> _isUser() async{
-        return 1;
+
+    final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+    var dataCarOwner;
+    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+      dataCarOwner = snapshot.value;
+    });
+
+
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    var userUid = user.uid;
+    var flag = 0;
+    dataCarOwner.forEach((k,v){
+      if(userUid.toString() == k.toString()){
+        flag = 1;
+      }
+    });
+
+    return flag;
+
   }
+
 
 
   @override
@@ -201,6 +271,7 @@ class CustomCard extends StatelessWidget {
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == 1)
                 {
+                  print(snapshot.data);
                       return new RaisedButton(
                         onPressed:(){
                         deleteRide(rideId);
@@ -231,7 +302,7 @@ class CustomCard extends StatelessWidget {
                 new FloatingActionButton(
                   //heroTag: rideId.toString(),
                     onPressed:(){
-                      writeBooking(rideId);
+                      writeBooking(rideId,driveruid,source,dest,date,time,context,numberofppl);
                       return showDialog(
                         context: context,
                         builder: (context) {
@@ -239,9 +310,9 @@ class CustomCard extends StatelessWidget {
                               // Retrieve the text the user has entered by using the
                               // TextEditingController.
                               content: Text("Booking created!"),
-        );
-      },
-    );
+                              );
+                            },
+                        );
                     },
                     child: Text("Book"),
                 ),
@@ -255,8 +326,8 @@ class CustomCard extends StatelessWidget {
     
   }
 
-  Future writeBooking(rideId)
-  async {
+  Future writeBooking(rideId,driveruid,source,dest,date,time,BuildContext context,numberofppl) async {
+
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final ridedbref = FirebaseDatabase.instance.reference().child("bookings");
     String k = ridedbref.push().key;
@@ -265,7 +336,47 @@ class CustomCard extends StatelessWidget {
       'user_id': user.uid,
       'timestamp created': DateTime.now().millisecondsSinceEpoch,
     });
-    
+
+    final rideRefPushBookings = FirebaseDatabase.instance.reference().child("rides").child(rideId.toString()).child("passengers");
+    rideRefPushBookings.update({
+      'passenger_id$numberofppl': user.uid,
+    });
+
+    final sendOwner = FirebaseDatabase.instance.reference().child("carowner");
+    var dataCarowner;
+    await sendOwner.once().then((DataSnapshot snapshot) {
+      dataCarowner = snapshot.value;
+    });
+
+    dataCarowner.forEach((k,v) async {
+      if(driveruid.toString() == k.toString())
+      {
+        var mailId = v["email"];
+
+        final databaseUpdate = FirebaseDatabase.instance.reference();
+        databaseUpdate.child("rides").child(rideId.toString()).update({
+          'numberofppl': numberofppl - 1,
+        });
+
+        print(numberofppl);
+
+//        String body = "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ";
+//        var url = 'mailto:$mailId?subject=Ride Booking notification &body=$body';
+//        await launch(url);
+//        print("email sent ");
+
+//        final Email email = Email(
+//          body: "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ",
+//          subject: 'Ride Notification',
+//          recipients: [mailId],
+//        );
+//        print("Here");
+//        await FlutterEmailSender.send(email);
+//        print("sent");
+      }
+    });
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> UserHomePage(),fullscreenDialog: true));
+
   }
 
   Future deleteRide(rideId)

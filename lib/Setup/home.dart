@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
           body: TabBarView(
             children: [
               new Container(
-                child: new WelcomePage(),
+                child: WelcomePage(),
               ),
               new Container(
                 child: TabPage(),
