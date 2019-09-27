@@ -67,9 +67,10 @@ class MyCard extends StatelessWidget{
     List<CustomCard> newCards = [];
 
     print("Inside00");
+    print(rideDetails);
 
     rideDetails.forEach((k ,v) {
-      print(key);
+      print(k);
       if(true)
       {
 
@@ -77,8 +78,8 @@ class MyCard extends StatelessWidget{
         if(passengers != null)
         {
           passengers.forEach((key,value){
-            print(value.toString() == userUid);
-            if(value.toString() == userUid)
+            print("tffff"+ (value.toString() == userUid.toString()).toString());
+            if(value.toString() == userUid.toString())
             {
               CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
               newCards.add(c);
@@ -101,12 +102,7 @@ class MyCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('View Ride'),
-        backgroundColor:new Color(0xFF673AB7),
-      ),
-      body: new Container(
+    return new Container(
           child: FutureBuilder(
             future: _getData(),
             builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -144,10 +140,7 @@ class MyCard extends StatelessWidget{
               }
             },
           )
-      ),
-
-
-    );
+      );
   }
 }
 
@@ -291,17 +284,20 @@ class CustomCard extends StatelessWidget {
                 new FloatingActionButton(
                   //heroTag: rideId.toString(),
                   onPressed:(){
-                    writeBooking(rideId,driveruid,source,dest,date,time,context,numberofppl);
+                    deleteBooking(rideId);
                     return showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          content: Text("Ride Deleted !"),
+                          content: Text("Your booking has been deleted!"),
                         );
                       },
                     );
+                    
                   },
                   child: Text("Delete"),
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
                 ),
               ],
             ),
@@ -309,6 +305,7 @@ class CustomCard extends StatelessWidget {
           )
         ],
       ),
+
     );
 
   }
@@ -373,6 +370,58 @@ class CustomCard extends StatelessWidget {
     await ridedbref.child(rideId).remove().then((_) {
       print('Transaction  committed.');
     });
+    
+
+  }
+
+  Future deleteBooking(rideId) async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final bookings = FirebaseDatabase.instance.reference().child("bookings");
+    final ridedbref = FirebaseDatabase.instance.reference().child("rides");
+    var bookingdata, passengerdata;
+    await bookings.once().then((DataSnapshot snapshot) {
+       //Map<dynamic, dynamic> bookingdata = snapshot.value;
+      bookingdata = snapshot.value;
+    });
+
+    print(bookingdata.toString());
+    if(bookingdata != null){
+    bookingdata.forEach((k,v) async {
+        print(v);
+        var ride = v['ride_id'];
+        if(ride == rideId){
+          print("ride to be deleted :"+k);
+            await bookings.child(k).remove().then((_) {
+            print('Transaction  committed.');
+      });
+          await ridedbref.child(ride).child("passengers").once().then((DataSnapshot snapshot) {
+            passengerdata = snapshot.value;
+          });
+          print(passengerdata);
+          if(passengerdata != null) {
+            passengerdata.forEach((key,value) {
+              print(value);
+              print(user.uid.toString());
+              print(value.toString() == user.uid.toString());
+              if(value.toString() == user.uid.toString())
+              {
+                print("ridedbref.childkey: "+ ridedbref.child(ride).child("passengers").child(key).toString());
+                ridedbref.child(ride).child("passengers").child(key).remove();
+              }
+            });
+          }
+        }
+        //var passenger_in_ride;
+        //final ind = FirebaseDatabase.instance.reference().child("rides").child(ride).child("passengers").equalTo(user);
+        //print(ind);
+      //  await ind.once().then((DataSnapshot snapshot) {
+      //     passenger_in_ride = snapshot.value;
+      //  });
+
+      //  print(passenger_in_ride);
+
+    });
+    }
 
   }
 }
