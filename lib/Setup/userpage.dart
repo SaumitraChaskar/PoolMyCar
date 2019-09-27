@@ -1,4 +1,6 @@
+import 'package:bbc_login/Setup/card_view.dart';
 import 'package:bbc_login/Setup/userhome.dart';
+import 'package:bbc_login/Setup/userrides.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -25,7 +27,7 @@ class _UserPageState extends State<UserPage> {
                   appBar: AppBar(
                     title: Text("My Rides")
                   ),
-                  body: new Icon(Icons.home),
+                  body: UserRideDataPage(),
               ),
               ),
               new Container(  

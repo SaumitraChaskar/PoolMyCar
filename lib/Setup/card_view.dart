@@ -325,6 +325,8 @@ class CustomCard extends StatelessWidget {
 
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final ridedbref = FirebaseDatabase.instance.reference().child("bookings");
+    final ride = FirebaseDatabase.instance.reference().child("rides").child("");
+
     String k = ridedbref.push().key;
     ridedbref.child(k).set({
       'ride_id':rideId,
