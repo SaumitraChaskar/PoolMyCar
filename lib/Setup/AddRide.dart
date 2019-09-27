@@ -151,18 +151,18 @@ DateTimeField(
         //icon: Icon(Icons.phone_iphone)
         ),
     controller: countController,
-)),
-new Padding(
-  padding: EdgeInsets.all(10.0),
-  child:
-TextFormField(
-            autofocus: false,
-            decoration: InputDecoration(
-          labelText: 'Preferences',
-          border:OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          ),
-  controller: preferenceController,
-)),
+    )),
+      new Padding(
+        padding: EdgeInsets.all(10.0),
+        child:
+          TextFormField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                labelText: 'Preferences',
+                border:OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+                ),
+        controller: preferenceController,
+      )),
       new Padding(
         padding: EdgeInsets.all(10.0),
           child:
@@ -180,25 +180,31 @@ TextFormField(
         //icon: Icon(Icons.phone_iphone)
         ),
     controller: priceppController,
-)),
-
-RaisedButton(
-  child: Text('Create'),
-  onPressed: (){
-    writeRide();
-   return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          // Retrieve the text the user has entered by using the
-          // TextEditingController.
-          content: Text("Ride created!"),
+    )),
+      ButtonTheme(
+        minWidth: 200,
+        height: 50,
+        child : RaisedButton(
+          onPressed:(){
+          writeRide();
+          return showDialog(
+            context: context,
+            builder: (context) {
+            return AlertDialog(
+              // Retrieve the text the user has entered by using the
+              // TextEditingController.
+              content: Text("Ride created!"),
         );
+        },
+      );
       },
-    );
-  },
-),
-         ] ),
+        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+        child: Text('Create',
+        style: TextStyle(color: Colors.white),),
+        ),
+      ),
+
+    ]),
     )
     )
     );

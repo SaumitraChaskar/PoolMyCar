@@ -44,7 +44,8 @@ class _WelcomePageState extends State<WelcomePage> {
                     child : RaisedButton(
                       onPressed:navigateToSignIn,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                      child: Text("Offer A Ride"),
+                      child: Text("Offer A Ride",
+                      style: TextStyle(color: Colors.white),),
                     ),
                   ),
                   Padding(
@@ -56,7 +57,8 @@ class _WelcomePageState extends State<WelcomePage> {
                     child : RaisedButton(
                       onPressed:navigateToSignIn,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                        child: Text("Book A Ride"),
+                        child: Text("Book A Ride",
+                        style: TextStyle(color: Colors.white),),
                     ),
                   ),
                   Padding(

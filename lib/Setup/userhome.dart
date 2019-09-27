@@ -106,7 +106,8 @@ class _UserHomePageState extends State<UserHomePage> {
                                 child : RaisedButton(
                                   onPressed:createRide,
                                   shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                  child: Text("Offer A Ride"),
+                                  child: Text("Offer A Ride",
+                                  style: TextStyle(color: Colors.white),),
                                 ),
                               ),
                             );
@@ -123,7 +124,8 @@ class _UserHomePageState extends State<UserHomePage> {
                       child : RaisedButton(
                         onPressed:navigateToSearchRide,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                        child: Text("Book A Ride"),
+                        child: Text("Book A Ride",
+                        style: TextStyle(color: Colors.white),),
                       ),
                     ),
                     Padding(
@@ -135,7 +137,8 @@ class _UserHomePageState extends State<UserHomePage> {
                       child : RaisedButton(
                         onPressed:navigateToHome,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                        child: Text("Logout"),
+                        child: Text("Logout",
+                        style: TextStyle(color: Colors.white),),
                       ),
                     ),
                     Padding(
