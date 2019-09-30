@@ -28,6 +28,7 @@ dependencies:
   datetime_picker_formfield: ^0.4.3
   date_format: ^1.0.6
   url_launcher: ^3.0.1
+  mailer: ^3.0.2
 
 
   # The following adds the Cupertino Icons font to your application.

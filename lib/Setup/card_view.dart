@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'mailHandler.dart';
+
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class CardViewDataPage extends StatelessWidget {
@@ -298,9 +300,12 @@ class CustomCard extends StatelessWidget {
                   //heroTag: rideId.toString(),
                     onPressed:(){
                       writeBooking(rideId,driveruid,source,dest,date,time,context,numberofppl);
+                      
+                      
                       return showDialog(
                         context: context,
                         builder: (context) {
+
                             return AlertDialog(
                               // Retrieve the text the user has entered by using the
                               // TextEditingController.
@@ -331,7 +336,7 @@ class CustomCard extends StatelessWidget {
       'user_id': user.uid,
       'timestamp created': DateTime.now().millisecondsSinceEpoch,
     });
-
+  
     final rideRefPushBookings = FirebaseDatabase.instance.reference().child("rides").child(rideId.toString()).child("passengers");
     rideRefPushBookings.update({
       'passenger_id$numberofppl': user.uid,
@@ -371,7 +376,7 @@ class CustomCard extends StatelessWidget {
       }
     });
     Navigator.push(context,MaterialPageRoute(builder: (context)=> UserHomePage(),fullscreenDialog: true));
-
+    sendBookingMail(user.email.toString());
   }
 
   Future deleteRide(rideId)
