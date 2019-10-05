@@ -62,9 +62,7 @@ class MyCard extends StatelessWidget{
         FirebaseUser user = await FirebaseAuth.instance.currentUser();
         var userUid = user.uid;
 
-
-
-
+        var rc = 0;
 
         var rideDetails = data['rides'];
 
@@ -77,6 +75,7 @@ class MyCard extends StatelessWidget{
             DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
             if( date.isAfter(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 )
             {
+              rc+=1;
               var flag = 0;
               if(v["passengers"] != null){
                 print(userUid.toString());
@@ -84,11 +83,13 @@ class MyCard extends StatelessWidget{
                 {
                   if(userUid.toString() == passenger.toString())
                   {
+                      print("1");
                       flag = 1;
                   }
                 });
                 if(flag == 0)
                   {
+                    print("2");
                     CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
                     newCards.add(c);
 
@@ -96,6 +97,7 @@ class MyCard extends StatelessWidget{
               }
               else
                 {
+                  print("3");
                   CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
                   newCards.add(c);
                 }
@@ -103,6 +105,8 @@ class MyCard extends StatelessWidget{
           }
 
         );
+        print(newCards);
+        print(rc);
         return newCards;
         }
 
@@ -268,7 +272,6 @@ class CustomCard extends StatelessWidget {
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == 1)
                 {
-                  print(snapshot.data);
                       return new RaisedButton(
                         onPressed:(){
                         deleteRide(rideId);
@@ -360,21 +363,6 @@ class CustomCard extends StatelessWidget {
           'numberofppl': numberofppl - 1,
         });
 
-        print(numberofppl);
-
-//        String body = "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ";
-//        var url = 'mailto:$mailId?subject=Ride Booking notification &body=$body';
-//        await launch(url);
-//        print("email sent ");
-
-//        final Email email = Email(
-//          body: "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ",
-//          subject: 'Ride Notification',
-//          recipients: [mailId],
-//        );
-//        print("Here");
-//        await FlutterEmailSender.send(email);
-//        print("sent");
       }
     });
     Navigator.push(context,MaterialPageRoute(builder: (context)=> UserHomePage(),fullscreenDialog: true));
