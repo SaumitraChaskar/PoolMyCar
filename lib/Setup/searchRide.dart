@@ -46,9 +46,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
         data = snapshot.value;
       });
 
-      print(_myJson);
       data.forEach((key,ride){
-        print(ride);
         _myJson.add(ride);
 
         if(!sources.contains(ride['source'])){
@@ -59,7 +57,6 @@ class _SearchRidePageState extends State<SearchRidePage> {
         }
       });
 
-      print(_myJson);
 //      _myJson = [{"id":0,"name":"<New>"},{"id":1,"name":"Test Practice"}];
       return _myJson;
     }

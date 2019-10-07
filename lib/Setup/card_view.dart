@@ -30,12 +30,15 @@ class MyCard extends StatelessWidget{
 
   final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
   static final databaseReference = FirebaseDatabase.instance.reference();
+  static final databaseReferenceFeedback = FirebaseDatabase.instance.reference().child("feedback");
+
   static int numRides = 0;
 
   Future<List<CustomCard>> _getData() async{
         var data;
         var dataCarowner;
-        List<Ride> rides = [];
+        var dataFeedback;
+
 
 
         await databaseReference.once().then((DataSnapshot snapshot) {
@@ -47,14 +50,36 @@ class MyCard extends StatelessWidget{
           dataCarowner = snapshot.value;
         });
 
+        await databaseReferenceFeedback.once().then((DataSnapshot snapshot) {
+          dataFeedback = snapshot.value;
+        });
+
         var carOwnerDetails = new Map();
 
         dataCarowner.forEach((k ,v){
           carOwnerDetails[k] = v["username"];
         });
 
+        var carOwnerRatings = new Map();
+
+        dataCarowner.forEach((k,v){
+          List<double> rData = [0,0];
+          carOwnerRatings[k] = rData;
+        });
+
+
+        dataFeedback.forEach((k,v){
+          print(v["driverUid"]);
+          print(carOwnerRatings[v["driverUid"]]);
+          carOwnerRatings[v["driverUid"]][0]+=1;
+          carOwnerRatings[v["driverUid"]][1]+=v["ratings"];
+        });
+
+
+
         final databaseReferencePassengerStop = FirebaseDatabase.instance.reference().child("bookings");
         var dataBookings;
+
         await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
           dataBookings = snapshot.value;
         });
@@ -73,40 +98,56 @@ class MyCard extends StatelessWidget{
             var dest  = sd.dest.toString();
             DateTime date = sd.dateTime;
             DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
-            if( date.isAfter(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 )
+            if( date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString())
             {
               rc+=1;
               var flag = 0;
               if(v["passengers"] != null){
-                print(userUid.toString());
                 v["passengers"].forEach((key,passenger)
                 {
                   if(userUid.toString() == passenger.toString())
                   {
-                      print("1");
                       flag = 1;
                   }
                 });
                 if(flag == 0)
                   {
-                    print("2");
-                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+                    double ratings = 0;
+                    if (carOwnerRatings[v["driverUid"]][0] != 0)
+                      {
+                        double n = carOwnerRatings[v["driverUid"]][1];
+                        double d = carOwnerRatings[v["driverUid"]][0];
+                        ratings = n/d;
+                      }
+
+
+
+                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
                     newCards.add(c);
 
                   }
               }
               else
                 {
-                  print("3");
-                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+
+                  double ratings = 0;
+
+                  if (carOwnerRatings[v["driverUid"]][0] != 0)
+                  {
+                    double n = carOwnerRatings[v["driverUid"]][1];
+                    double d = carOwnerRatings[v["driverUid"]][0];
+                    ratings = n/d;
+                  }
+
+
+                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
                   newCards.add(c);
+
                 }
             }
           }
 
         );
-        print(newCards);
-        print(rc);
         return newCards;
         }
 
@@ -176,6 +217,7 @@ class CustomCard extends StatelessWidget {
     this.driveruid,
     this.numberofppl,
     this.date,
+    this.ratings,
   });
 
   final String username;
@@ -188,8 +230,9 @@ class CustomCard extends StatelessWidget {
   final String driveruid;
   final int numberofppl;
   final String rideId;
+  final double ratings;
 
-  Future<int> _isUser() async{
+  Future<int> _isUser(driveruid) async{
 
     final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
     var dataCarOwner;
@@ -202,10 +245,11 @@ class CustomCard extends StatelessWidget {
     var userUid = user.uid;
     var flag = 0;
     dataCarOwner.forEach((k,v){
-      if(userUid.toString() == k.toString()){
+      if(userUid.toString() == k.toString() && userUid == driveruid){
         flag = 1;
       }
     });
+
 
     return flag;
 
@@ -225,7 +269,7 @@ class CustomCard extends StatelessWidget {
                 ),
                 radius: 35,
               ),
-              title: new Text(username),
+              title: new Text(username + " -------- Rating: " + ratings.toString()),
               subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
@@ -268,7 +312,7 @@ class CustomCard extends StatelessWidget {
                   padding: EdgeInsets.all(7.0),
                   child: Container(
                     child: FutureBuilder(
-                      future: _isUser(),
+                      future: _isUser(driveruid),
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == 1)
                 {
