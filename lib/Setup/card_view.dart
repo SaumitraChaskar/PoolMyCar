@@ -98,6 +98,10 @@ class MyCard extends StatelessWidget{
             var dest  = sd.dest.toString();
             DateTime date = sd.dateTime;
             DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
+            print("BOOLEAN");
+//            print(date.isBefore(rideDate));
+            print(date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0);
+            print(date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString());
             if( date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString())
             {
               rc+=1;
@@ -148,6 +152,8 @@ class MyCard extends StatelessWidget{
           }
 
         );
+        print("newCards");
+        print(newCards);
         return newCards;
         }
 

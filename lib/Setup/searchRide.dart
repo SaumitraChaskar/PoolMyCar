@@ -21,7 +21,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
   static final destController = TextEditingController();
   final myController3 = TextEditingController();
   final timeController = TextEditingController();
-  final dateformat = DateFormat("yyyy-dd-MM");
+  final dateformat = DateFormat("yyyy-MM-dd");
   final timeformat = DateFormat("HH:mm");
   final dbRideRef = FirebaseDatabase.instance.reference().child('rides');
 
@@ -175,7 +175,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                   controller: myController3,
                 ),
 
-              Text('Time of ride : (${timeformat.pattern})'),
+              Text('Time of ride '),
               DateTimeField(
                 format: timeformat,
                 onShowPicker: (context, currentValue) async {
@@ -209,6 +209,8 @@ class _SearchRidePageState extends State<SearchRidePage> {
   
 void goToViewRide()
   {
+    print("Date Verify-----------------------");
+    print(DateTime.parse("${myController3.text} ${timeController.text}"));
     Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
   }
 }
