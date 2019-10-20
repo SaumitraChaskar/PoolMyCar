@@ -1,3 +1,4 @@
+import 'package:bbc_login/Setup/Show_ride_plus_booking.dart';
 import 'package:bbc_login/Setup/card_view.dart';
 import 'package:bbc_login/Setup/userhome.dart';
 import 'package:bbc_login/Setup/userrides.dart';
@@ -27,7 +28,8 @@ class _UserPageState extends State<UserPage> {
                   appBar: AppBar(
                     title: Text("My Rides")
                   ),
-                  body: UserRideDataPage(),
+                  body: //UserRideDataPage(),
+                  DriverViewPage(),
               ),
               ),
               new Container(  

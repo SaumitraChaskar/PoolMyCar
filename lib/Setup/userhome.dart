@@ -1,6 +1,7 @@
 
 import 'package:bbc_login/Setup/AddRide.dart';
 import 'package:bbc_login/Setup/data.dart';
+import 'package:bbc_login/Setup/driverViewRide.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
 import 'package:bbc_login/Setup/tabs.dart';
@@ -30,7 +31,7 @@ class _UserHomePageState extends State<UserHomePage> {
   static String username = "";
 
   void  _getDataUser() async{
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     final databaseReference = FirebaseDatabase.instance.reference().child("passenger");
     databaseReference.once().then((DataSnapshot snapshot){
@@ -160,6 +161,7 @@ class _UserHomePageState extends State<UserHomePage> {
   void navigateToSearchRide()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> SearchRidePage(),fullscreenDialog: true));
+    //Navigator.push(context,MaterialPageRoute(builder: (context)=> DriverViewRidePage(),fullscreenDialog: true));
   }
 
   void navigateToSignUp()

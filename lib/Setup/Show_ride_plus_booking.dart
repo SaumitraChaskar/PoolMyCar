@@ -1,25 +1,31 @@
+
+import 'package:bbc_login/Setup/driverViewRide.dart';
 import 'package:bbc_login/Setup/feedback.dart';
 import 'package:bbc_login/Setup/userhome.dart';
+import 'package:bbc_login/Setup/userrides.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
 
-class UserRideDataPage extends StatelessWidget {
+class DriverViewPage extends StatelessWidget {
+
+
   // This widget is the root of your application.
-  UserRideDataPage({Key key,}) : super(key: key);
+  DriverViewPage({Key key,}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home:new MyCard(),
+      home:new MyDriverViewCard(),
     );
   }
 }
+class MyDriverViewCard extends StatelessWidget{
 
-class MyCard extends StatelessWidget{
 
-  MyCard({Key key,}) : super(key: key);
+  MyDriverViewCard({Key key,}) : super(key: key);
 
   final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
   static final databaseReference = FirebaseDatabase.instance.reference();
@@ -44,7 +50,7 @@ class MyCard extends StatelessWidget{
 
     print("Inside2");
 
-    var carOwnerDetails = Map();
+    var carOwnerDetails = new Map();
 
     dataCarowner.forEach((k ,v){
       carOwnerDetails[k] = v["username"];
@@ -73,7 +79,7 @@ class MyCard extends StatelessWidget{
           passengers.forEach((key,value){
             if(value.toString() == userUid.toString())
             {
-              CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+              CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
               newCards.add(c);
             }
           });
@@ -92,43 +98,72 @@ class MyCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-          child: FutureBuilder(
-            future: _getData(),
-            builder:(BuildContext context ,AsyncSnapshot snapshot ){
-              if(snapshot.data == null)
-              {
-                return Container(
-                  child: Center(
-                      child:Text("Please wait wheels are rolling  ....")
-                  ),
-                );
-              }
-              else {
-                return Column(
-                  children: <Widget>[
-                    Card(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const ListTile(
-                            leading: Icon(Icons.album),
-                            title: Text('Book Your Rides Here !'),
-                            subtitle: Text('Travel to Unravel'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: snapshot.data,
-                        )
-                    )
-                  ],
-                );
-              }
-            },
+    return new Container(
+
+          child: DefaultTabController(
+            length: 2,
+            child: Scaffold(
+                appBar: AppBar(
+                  bottom: TabBar(
+                    tabs: [
+                      Tab(text : 'My rides'),
+                      Tab(text: 'My bookings'),
+        ],
+      ),
+    ),
+    body: TabBarView(
+      children: <Widget>[
+
+        Container(
+          child:
+            MyDriverCard()
+          ),
+        Container(child: 
+        MyCard()
+        //Icon(Icons.directions_car),
+        //new MyDriverCard()
+        // FutureBuilder(
+        //     future: _getData(),
+        //     builder:(BuildContext context ,AsyncSnapshot snapshot ){
+        //       if(snapshot.data == null)
+        //       {
+        //         return Container(
+        //           child: Center(
+        //               child:Text("Please wait wheels are rolling  ....")
+        //           ),
+        //         );
+        //       }
+        //       else {
+        //         return new Column(
+        //           children: <Widget>[
+        //             Card(
+        //               child: Column(
+        //                 mainAxisSize: MainAxisSize.min,
+        //                 children: <Widget>[
+        //                   const ListTile(
+        //                     leading: Icon(Icons.album),
+        //                     title: Text('Book Your Rides Here !'),
+        //                     subtitle: Text('Travel to Unravel'),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             Expanded(
+        //                 child: ListView(
+        //                   shrinkWrap: true,
+        //                   children: snapshot.data,
+        //                 )
+        //             )
+        //           ],
+        //         );
+        //       }
+        //     },
+        //   ),
+
+        )
+      ],
+    ),
+  ),
           )
       );
   }
@@ -188,6 +223,7 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context)  {
 
+
     Future<String> _getUser () async
     {
       FirebaseUser user =  await FirebaseAuth.instance.currentUser();
@@ -195,56 +231,56 @@ class CustomCard extends StatelessWidget {
       return userUid;
     }
 
-    return Card(
-      child: Column(
+  return  new Card(
+      child: new Column(
         children: <Widget>[
-          ListTile(
+          new ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(
                   "https://img.icons8.com/bubbles/50/000000/user.png",
                 ),
                 radius: 35,
               ),
-              title: Text(username),
+              title: new Text(username),
               subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
-          Padding(
-            padding: EdgeInsets.all(7.0),
-            child: Row(
+          new Padding(
+            padding: new EdgeInsets.all(7.0),
+            child: new Row(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(7.0),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(7.0),
-                  child: Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: TextStyle(fontSize: 12.0),),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
+                  child: new Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: new TextStyle(fontSize: 12.0),),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(7.0),
-                  child: Text("  Ride Price: "+ pricepp.toString(),style: TextStyle(fontSize: 12.0)),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
+                  child: new Text("  Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
                 ),
               ],
             ),
 
           ),
-          Padding(
-            padding: EdgeInsets.all(7.0),
-            child: Row(
+          new Padding(
+            padding: new EdgeInsets.all(7.0),
+            child: new Row(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(7.0),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(7.0),
-                  child: Text('From: ' + source,style: TextStyle(fontSize: 12.0),),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
+                  child: new Text('From: ' + source,style: new TextStyle(fontSize: 12.0),),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(7.0),
-                  child: Text('To: ' + dest.toString(),style: TextStyle(fontSize: 12.0)),
+                new Padding(
+                  padding: new EdgeInsets.all(7.0),
+                  child: new Text('To: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
                 ),
                 Spacer(),
-                Padding(
+                new Padding(
                     padding: EdgeInsets.all(7.0),
                     child: Container(
                       child: FutureBuilder(
@@ -252,9 +288,9 @@ class CustomCard extends StatelessWidget {
                           builder:(BuildContext context ,AsyncSnapshot snapshot ){
                             if(snapshot.data == 1)
                             {
-                              return Column(
+                              return new Column(
                                 children: <Widget>[
-                                  RaisedButton(
+                                  new RaisedButton(
                                     onPressed:(){
                                       deleteRide(rideId);
                                       return showDialog(
@@ -270,8 +306,9 @@ class CustomCard extends StatelessWidget {
                                     },
                                     child: Text("Delete"),
                                   ),
-                                  RaisedButton(
+                                  new RaisedButton(
                                     onPressed:(){
+
                                     },
                                     child: Text("Rate Ride"),
                                   ),
@@ -279,7 +316,7 @@ class CustomCard extends StatelessWidget {
                               );
                             }
                             else {
-                              return Container(
+                              return new Container(
                               );
                             }
                           }
@@ -288,7 +325,7 @@ class CustomCard extends StatelessWidget {
                     )
 
                 ),
-                FloatingActionButton(
+                new FloatingActionButton(
                   //heroTag: rideId.toString(),
                   heroTag: rideId + "1",
                   onPressed:(){
@@ -307,10 +344,10 @@ class CustomCard extends StatelessWidget {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                  Padding(
+                  new Padding(
                   padding: EdgeInsets.all(7.0),
                 ),
-                Container(
+                new Container(
                   child: FutureBuilder(
                       future: _getUser(),
                       builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -318,7 +355,7 @@ class CustomCard extends StatelessWidget {
                         {
                           user = snapshot.data;
                           print(user);
-                          return Container(
+                          return new Container(
                           );
 
                         }
@@ -327,7 +364,7 @@ class CustomCard extends StatelessWidget {
 
                   ),
                 ),
-                FloatingActionButton(
+                new FloatingActionButton(
                   heroTag: rideId + "2",
                   //heroTag: rideId.toString(),
                   onPressed:(){
@@ -488,3 +525,5 @@ class SourceDest
 
   SourceDest(this.source,this.dest,this.dateTime);
 }
+
+

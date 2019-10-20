@@ -26,6 +26,7 @@ class NewRidePageState extends State<NewRidePage> {
   final dateformat = DateFormat("yyyy-MM-dd");
   final timeformat = DateFormat("HH:mm");
 
+  final GlobalKey<ScaffoldState> _globalKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class NewRidePageState extends State<NewRidePage> {
       ),
       body: Container(
       padding: EdgeInsets.all(25.0),
+      key: _globalKey,
       child: SingleChildScrollView(
         
         child: Column(
@@ -186,17 +188,43 @@ DateTimeField(
         height: 50,
         child : RaisedButton(
           onPressed:(){
-          writeRide();
-          return showDialog(
-            context: context,
-            builder: (context) {
-            return AlertDialog(
-              // Retrieve the text the user has entered by using the
-              // TextEditingController.
-              content: Text("Ride created!"),
-        );
-        },
+            return showDialog(context: context, 
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Please confirm if you want create ride')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => _confirmResult(true,context),
+            child: Text('confirm'),
+          ),
+          FlatButton(
+            onPressed: () => _confirmResult(false, context),
+            child: Text('cancel'),
+          )
+
+        ],
       );
+    }
+    );
+      //       writeRide();
+      //     return showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //       return AlertDialog(
+      //         // Retrieve the text the user has entered by using the
+      //         // TextEditingController.
+      //         content: Text("Ride created!"),
+      //   );
+      //   },
+      // );
       },
         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
         child: Text('Create',
@@ -230,5 +258,21 @@ DateTimeField(
       'rideid': k, 
     });
     print(DBRef);
+  }
+
+  _confirmResult(bool isTrue, BuildContext context){
+    
+      if(isTrue){
+        writeRide();
+        Navigator.pop(context);
+        final snackBar = new SnackBar(
+        content: new Text('Your Ride has been created!')
+        );
+          Scaffold.of(context).showSnackBar(snackBar);
+        }
+      else{
+          Navigator.pop(context);
+
+      }
   }
 }
