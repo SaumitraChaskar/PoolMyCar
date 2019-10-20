@@ -1,4 +1,5 @@
 
+import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,7 +21,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
   static final destController = TextEditingController();
   final myController3 = TextEditingController();
   final timeController = TextEditingController();
-  final dateformat = DateFormat("yyyy-dd-MM");
+  final dateformat = DateFormat("yyyy-MM-dd");
   final timeformat = DateFormat("HH:mm");
   final dbRideRef = FirebaseDatabase.instance.reference().child('rides');
 
@@ -45,9 +46,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
         data = snapshot.value;
       });
 
-      print(_myJson);
       data.forEach((key,ride){
-        print(ride);
         _myJson.add(ride);
 
         if(!sources.contains(ride['source'])){
@@ -58,7 +57,6 @@ class _SearchRidePageState extends State<SearchRidePage> {
         }
       });
 
-      print(_myJson);
 //      _myJson = [{"id":0,"name":"<New>"},{"id":1,"name":"Test Practice"}];
       return _myJson;
     }
@@ -72,7 +70,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
           padding: EdgeInsets.all(25.0),
           child: Column(
             children: <Widget>[
-              TextField(
+              TextFormField(
                 autocorrect: true,
                 controller: sourceController,
                 decoration: InputDecoration(
@@ -84,7 +82,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
             
               ),
               SizedBox(height: 20),
-              TextField(
+              TextFormField(
                 autocorrect: true,
                 controller: destController,
                 decoration: InputDecoration(
@@ -177,7 +175,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                   controller: myController3,
                 ),
 
-              Text('Time of ride : (${timeformat.pattern})'),
+              Text('Time of ride '),
               DateTimeField(
                 format: timeformat,
                 onShowPicker: (context, currentValue) async {
@@ -209,8 +207,22 @@ class _SearchRidePageState extends State<SearchRidePage> {
   }
 
   
-void goToViewRide()
+String goToViewRide()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
+    try
+    {
+      print(DateTime.parse("${myController3.text} ${timeController.text}"));
+      Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
+    }
+    catch(e)
+    {
+      ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+        return Scaffold(
+            body: Center(
+                child: Text(e)));
+      };
+      print("error");
+    }
+    return e.toString();
   }
 }

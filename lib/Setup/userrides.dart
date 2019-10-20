@@ -1,4 +1,5 @@
 
+import 'package:bbc_login/Setup/feedback.dart';
 import 'package:bbc_login/Setup/userhome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -66,11 +67,7 @@ class MyCard extends StatelessWidget{
 
     List<CustomCard> newCards = [];
 
-    print("Inside00");
-    print(rideDetails);
-
     rideDetails.forEach((k ,v) {
-      print(k);
       if(true)
       {
 
@@ -78,7 +75,6 @@ class MyCard extends StatelessWidget{
         if(passengers != null)
         {
           passengers.forEach((key,value){
-            print("tffff"+ (value.toString() == userUid.toString()).toString());
             if(value.toString() == userUid.toString())
             {
               CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
@@ -90,8 +86,6 @@ class MyCard extends StatelessWidget{
 
 
       }
-
-  print(newCards);
       print("HHEHH");
       }
 
@@ -169,6 +163,7 @@ class CustomCard extends StatelessWidget {
   final String driveruid;
   final int numberofppl;
   final String rideId;
+  String user;
 
   Future<int> _isUser() async{
 
@@ -196,7 +191,15 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context)  {
-    return  Card(
+
+    Future<String> _getUser () async
+    {
+      FirebaseUser user =  await FirebaseAuth.instance.currentUser();
+      String userUid = user.uid.toString();
+      return userUid;
+    }
+
+    return Card(
       child: Column(
         children: <Widget>[
           ListTile(
@@ -253,22 +256,30 @@ class CustomCard extends StatelessWidget {
                           builder:(BuildContext context ,AsyncSnapshot snapshot ){
                             if(snapshot.data == 1)
                             {
-                              print(snapshot.data);
-                              return new RaisedButton(
-                                onPressed:(){
-                                  deleteRide(rideId);
-                                  return showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        // Retrieve the text the user has entered by using the
-                                        // TextEditingController.
-                                        content: Text("Deleted ride!"),
+                              return Column(
+                                children: <Widget>[
+                                  RaisedButton(
+                                    onPressed:(){
+                                      deleteRide(rideId);
+                                      return showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            // Retrieve the text the user has entered by using the
+                                            // TextEditingController.
+                                            content: Text("Deleted ride!"),
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
-                                child: Text("Delete"),
+                                    child: Text("Delete"),
+                                  ),
+                                  RaisedButton(
+                                    onPressed:(){
+                                    },
+                                    child: Text("Rate Ride"),
+                                  ),
+                                ],
                               );
                             }
                             else {
@@ -283,6 +294,7 @@ class CustomCard extends StatelessWidget {
                 ),
                 FloatingActionButton(
                   //heroTag: rideId.toString(),
+                  heroTag: rideId + "1",
                   onPressed:(){
                     deleteBooking(rideId);
                     return showDialog(
@@ -295,8 +307,38 @@ class CustomCard extends StatelessWidget {
                     );
                     
                   },
-                  child: Text("Delete"),
+                  child: Text("Cancel"),
                   backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                  Padding(
+                  padding: EdgeInsets.all(7.0),
+                ),
+                Container(
+                  child: FutureBuilder(
+                      future: _getUser(),
+                      builder:(BuildContext context ,AsyncSnapshot snapshot ){
+                        if(snapshot.data != null)
+                        {
+                          user = snapshot.data;
+                          print(user);
+                          return Container(
+                          );
+
+                        }
+                        return Container();
+                      }
+
+                  ),
+                ),
+                FloatingActionButton(
+                  heroTag: rideId + "2",
+                  //heroTag: rideId.toString(),
+                  onPressed:(){
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(rideId : rideId),fullscreenDialog: true));
+                  },
+                  child: Text("Rate!"),
+                  backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),
               ],
@@ -424,6 +466,8 @@ class CustomCard extends StatelessWidget {
     }
 
   }
+
+
 }
 
 class Ride
@@ -448,3 +492,5 @@ class SourceDest
 
   SourceDest(this.source,this.dest,this.dateTime);
 }
+
+

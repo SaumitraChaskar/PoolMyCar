@@ -2,6 +2,8 @@ import 'package:bbc_login/Setup/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:email_validator/email_validator.dart';
+
 
 
 class SignUpPage extends StatefulWidget {
@@ -35,7 +37,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           if(input.isEmpty) {
                             return 'Please fill the email';
                           }
+                          if(EmailValidator.validate(input) == true)
+                            {
+                              return 'Email invalid';
+                            }
                           return null;
+
                         } ,
                         onSaved: (input) => _email = input,
                         decoration: InputDecoration(
@@ -56,6 +63,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         validator:(input){
                           if(input.length < 6) {
                             return 'Password not strong';
+                          }
+                          if(input.length > 20) {
+                            return 'Password too long please limit';
                           }
                           return null;
                         } ,

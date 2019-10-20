@@ -1,6 +1,5 @@
 
 import 'package:bbc_login/Setup/AddRide.dart';
-import 'package:bbc_login/Setup/data.dart';
 import 'package:bbc_login/Setup/signin.dart';
 import 'package:bbc_login/Setup/signup.dart';
 import 'package:bbc_login/Setup/tabs.dart';
@@ -168,14 +167,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
   }
 
-  void navigateToData()
-  {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> DataPage(),fullscreenDialog: true));
-
-  }
-
-
-void createRide()
+  void createRide()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
@@ -192,6 +184,7 @@ void createRide()
 
   void navigateToHome()
   {
+    var result = FirebaseAuth.instance.signOut();
     Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage(),fullscreenDialog: true));
   }
 
