@@ -124,8 +124,6 @@ class MyCard extends StatelessWidget{
                         ratings = n/d;
                       }
 
-
-
                     CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
                     newCards.add(c);
 
@@ -173,8 +171,11 @@ class MyCard extends StatelessWidget{
                 {
                   return Container(
                     child: Center(
-                        child:Text("Please wait wheels are rolling  ....")
-                    ),
+                        child: Container(
+                            child: CircularProgressIndicator(),
+                      alignment: Alignment(0.0, 0.0),
+                ),
+                )
                   );
                 }
                 else {

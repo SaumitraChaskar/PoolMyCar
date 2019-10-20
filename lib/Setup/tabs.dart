@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:bbc_login/Setup/signin.dart';
+import 'package:email_validator/email_validator.dart';
+
 
 
 class TabPage extends StatefulWidget {
@@ -54,6 +56,9 @@ class _TabPageState extends State<TabPage> {
                                 if(input.isEmpty) {
                                   return 'Please fill the email';
                                 }
+                                if(EmailValidator.validate(input) == false) {
+                                  return 'Email invalid';
+                                }
                                 return null;
                               } ,
                               onSaved: (input) => _email = input,
@@ -76,6 +81,9 @@ class _TabPageState extends State<TabPage> {
                               validator:(input){
                                 if(input.length < 6) {
                                   return 'Password not strong';
+                                }
+                                if(input.length > 20) {
+                                  return 'Password too long please limit';
                                 }
                                 return null;
                               } ,
@@ -116,9 +124,10 @@ class _TabPageState extends State<TabPage> {
                           Padding(
                             padding : const EdgeInsets.all(10),
                             child: TextFormField(
+                              keyboardType: TextInputType.number,
                               validator:(input){
-                                if(input.isEmpty) {
-                                  return 'Please fill the contact';
+                                if(input.length != 10) {
+                                  return 'Please enter a valid phone mumber';
                                 }
                                 return null;
                               } ,
@@ -168,6 +177,9 @@ class _TabPageState extends State<TabPage> {
                                   if(input.isEmpty) {
                                     return 'Please fill the email';
                                   }
+                                  if(EmailValidator.validate(input) == false) {
+                                    return 'Email invalid';
+                                  }
                                   return null;
                                 } ,
                                 onSaved: (input) => _email = input,
@@ -189,6 +201,9 @@ class _TabPageState extends State<TabPage> {
                                 validator:(input){
                                   if(input.length < 6) {
                                     return 'Password not strong';
+                                  }
+                                  if(input.length > 20) {
+                                    return 'Password too long please limit';
                                   }
                                   return null;
                                 } ,
@@ -229,9 +244,13 @@ class _TabPageState extends State<TabPage> {
                             Padding(
                               padding : const EdgeInsets.all(10),
                               child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                 validator:(input){
                                   if(input.isEmpty) {
                                     return "Enter contact number";
+                                  }
+                                  if(input.length != 10) {
+                                    return "Invalid Contact";
                                   }
                                   return null;
                                 } ,

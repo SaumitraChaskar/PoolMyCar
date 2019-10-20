@@ -168,14 +168,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
   }
 
-  void navigateToData()
-  {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> DataPage(),fullscreenDialog: true));
-
-  }
-
-
-void createRide()
+  void createRide()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
@@ -192,6 +185,7 @@ void createRide()
 
   void navigateToHome()
   {
+    var result = FirebaseAuth.instance.signOut();
     Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage(),fullscreenDialog: true));
   }
 

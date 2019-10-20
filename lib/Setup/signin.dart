@@ -1,6 +1,7 @@
 import 'package:bbc_login/Setup/userpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -31,6 +32,9 @@ class _LoginPageState extends State<LoginPage> {
                     validator:(input){
                       if(input.isEmpty) {
                         return 'Please fill the email';
+                      }
+                      if(EmailValidator.validate(input) == false) {
+                        return 'Email invalid';
                       }
                       return null;
                     } ,
@@ -94,7 +98,6 @@ class _LoginPageState extends State<LoginPage> {
       try
       {
         AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-//        FirebaseUser user = result.user;
         Navigator.push(context,MaterialPageRoute(builder: (context)=> UserPage()));
       }
       catch(e)
