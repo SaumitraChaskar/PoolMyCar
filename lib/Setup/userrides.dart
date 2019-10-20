@@ -161,25 +161,29 @@ class CustomCard extends StatelessWidget {
   final String rideId;
   String user;
 
-  Future<int> _isUser() async{
+  Future<int> _isUser(carOwnerId) async{
 
-    final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
-    var dataCarOwner;
-    await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
-      dataCarOwner = snapshot.value;
-    });
+    // final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+    // var dataCarOwner;
+    // await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+    //   dataCarOwner = snapshot.value;
+    // });
 
 
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    var userUid = user.uid;
-    var flag = 0;
-    dataCarOwner.forEach((k,v){
-      if(userUid.toString() == k.toString()){
-        flag = 1;
-      }
-    });
+    //var userUid = user.uid;
+    //var flag = 0;
+    // dataCarOwner.forEach((k,v){
+    //   if(userUid.toString() == k.toString()){
+    //     flag = 1;
+    //   }
+    // });
 
-    return flag;
+    if(carOwnerId == user.uid.toString()){
+      return 1;
+    }
+
+    return 0;
 
   }
 
@@ -248,7 +252,7 @@ class CustomCard extends StatelessWidget {
                     padding: EdgeInsets.all(7.0),
                     child: Container(
                       child: FutureBuilder(
-                          future: _isUser(),
+                          future: _isUser(driveruid),
                           builder:(BuildContext context ,AsyncSnapshot snapshot ){
                             if(snapshot.data == 1)
                             {
