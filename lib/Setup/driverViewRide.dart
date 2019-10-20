@@ -328,13 +328,13 @@ class CustomDriverViewRideCard extends StatelessWidget {
                                         actions: <Widget>[
                                           FlatButton(
                                             onPressed: () =>
-                                                _confirmResultForDeletion(
+                                                confirmResultForDeleteRide(
                                                     true, context),
                                             child: Text('confirm'),
                                           ),
                                           FlatButton(
                                             onPressed: () =>
-                                                _confirmResultForDeletion(
+                                                confirmResultForDeleteRide(
                                                     false, context),
                                             child: Text('cancel'),
                                           )
@@ -363,7 +363,7 @@ class CustomDriverViewRideCard extends StatelessWidget {
     });
   }
 
-  _confirmResultForDeletion(bool isTrue, BuildContext context) {
+  void confirmResultForDeleteRide(bool isTrue, BuildContext context) {
     if (isTrue) {
       deleteRide(rideId);
       Navigator.pop(context);

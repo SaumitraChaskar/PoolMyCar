@@ -8,38 +8,32 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>{
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return new MaterialApp(
-      color: Colors.yellow,
-      home: DefaultTabController(
+    
+      return Scaffold(
+      body: DefaultTabController(
         length: 3,
-        child: new Scaffold(
+        child: Scaffold(
           body: TabBarView(
             children: [
-              new Container(
-                child: WelcomePage(),
-              ),
-              new Container(
-                child: TabPage(),
-              ),
-              new Container(
-                child:LoginPage(),
-              ),
+              WelcomePage(),
+              TabPage(),
+              LoginPage(),
             ],
           ),
-          bottomNavigationBar: new TabBar(
+          bottomNavigationBar: TabBar(
             tabs: [
               Tab(
-                icon: new Icon(Icons.home),
+                icon: Icon(Icons.home),
               ),
               Tab(
-                icon: new Icon(Icons.rss_feed),
+                icon: Icon(Icons.rss_feed),
               ),
               Tab(
-                icon: new Icon(Icons.perm_identity),
+                icon: Icon(Icons.perm_identity),
               ),
             ],
             labelColor: Colors.blue,

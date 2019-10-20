@@ -2,6 +2,8 @@ import 'package:bbc_login/Setup/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:email_validator/email_validator.dart';
+
 
 
 class SignUpPage extends StatefulWidget {
@@ -35,16 +37,21 @@ class _SignUpPageState extends State<SignUpPage> {
                           if(input.isEmpty) {
                             return 'Please fill the email';
                           }
+                          if(EmailValidator.validate(input) == true)
+                            {
+                              return 'Email invalid';
+                            }
                           return null;
+
                         } ,
                         onSaved: (input) => _email = input,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             fillColor: Colors.lightBlueAccent,
                             filled: true,
-                            contentPadding: new EdgeInsets.fromLTRB(
+                            contentPadding: EdgeInsets.fromLTRB(
                                 10.0, 30.0, 10.0, 10.0),
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(12.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             labelText: ' Email '),
                       ),
@@ -57,16 +64,19 @@ class _SignUpPageState extends State<SignUpPage> {
                           if(input.length < 6) {
                             return 'Password not strong';
                           }
+                          if(input.length > 20) {
+                            return 'Password too long please limit';
+                          }
                           return null;
                         } ,
                         onSaved: (input) => _password = input,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             fillColor: Colors.lightBlueAccent,
                             filled: true,
-                            contentPadding: new EdgeInsets.fromLTRB(
+                            contentPadding: EdgeInsets.fromLTRB(
                                 10.0, 30.0, 10.0, 10.0),
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(12.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             labelText: ' Password '),
                         obscureText: true,
@@ -82,13 +92,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           return null;
                         } ,
                         onSaved: (input) => _username = input,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             fillColor: Colors.lightBlueAccent,
                             filled: true,
-                            contentPadding: new EdgeInsets.fromLTRB(
+                            contentPadding: EdgeInsets.fromLTRB(
                                 10.0, 30.0, 10.0, 10.0),
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(12.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             labelText: ' Username '),
                       ),
@@ -103,13 +113,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           return null;
                         } ,
                         onSaved: (input) => _contactNo = input,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             fillColor: Colors.lightBlueAccent,
                             filled: true,
-                            contentPadding: new EdgeInsets.fromLTRB(
+                            contentPadding: EdgeInsets.fromLTRB(
                                 10.0, 30.0, 10.0, 10.0),
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(12.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             labelText: ' Contact No. '),
                       ),

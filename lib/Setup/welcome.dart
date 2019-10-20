@@ -27,16 +27,16 @@ class _WelcomePageState extends State<WelcomePage> {
         title: Text('PoolMyCar'),
       ),
       body: new Center(
-          child: new Container(
+          child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("Assets/images/back1.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
-            child: new Container(
+            child: Container(
               margin: EdgeInsets.fromLTRB(100,325,100,0),
-              child:new ListView(
+              child: ListView(
                 children: <Widget>[
                   ButtonTheme(
                     minWidth: 200,
@@ -90,7 +90,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   void navigateToFeedbackPage()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
+//    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
   }
 
   void navigateToTabs()

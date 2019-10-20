@@ -1,5 +1,5 @@
 
-import 'package:date_format/date_format.dart';
+import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,20 +24,17 @@ class _SearchRidePageState extends State<SearchRidePage> {
   final dateformat = DateFormat("yyyy-MM-dd");
   final timeformat = DateFormat("HH:mm");
   final dbRideRef = FirebaseDatabase.instance.reference().child('rides');
-
+  String selSubSource;
+  String selSubDest;
   @override
   Widget build(BuildContext context){
 
 
-    String _mySelectionSource;
-    String _mySelectionDest;
-
-    
     List<Map> _myJson = [];
     List<String> sources = [];
     List<String> destinations = [];
 
-    Future<List<Map>> _getDataForSource() async
+    Future<List<Map>> _getDataForSource(source,destination) async
     {
       final databaseReferenceRides = FirebaseDatabase.instance.reference().child("rides");
       var data;
@@ -49,15 +46,18 @@ class _SearchRidePageState extends State<SearchRidePage> {
       data.forEach((key,ride){
         _myJson.add(ride);
 
-        if(!sources.contains(ride['source'])){
-          sources.add(ride['source']);
-        }
-        if(!destinations.contains(ride['dest'])){
-          destinations.add(ride['dest']);
-        }
+        if (ride['source'] == source && ride['dest'] == destination)
+          {
+            if(!sources.contains(ride['subsource'])){
+              sources.add(ride['subsource']);
+            }
+            if(!destinations.contains(ride['subdest'])){
+              destinations.add(ride['subdest']);
+            }
+          }
+
       });
 
-//      _myJson = [{"id":0,"name":"<New>"},{"id":1,"name":"Test Practice"}];
       return _myJson;
     }
 
@@ -70,89 +70,110 @@ class _SearchRidePageState extends State<SearchRidePage> {
           padding: EdgeInsets.all(25.0),
           child: Column(
             children: <Widget>[
-              TextField(
+              TextFormField(
                 autocorrect: true,
                 controller: sourceController,
-                decoration: InputDecoration(
-                labelText: 'Enter starting point',
-                contentPadding: new EdgeInsets.fromLTRB(
-                                      10.0, 30.0, 10.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+            decoration: InputDecoration(
+                fillColor: Colors.lightBlueAccent,
+                filled: true,
+                contentPadding: EdgeInsets.fromLTRB(
+                    10.0, 30.0, 10.0, 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-            
+              labelText: 'From',),
               ),
               SizedBox(height: 20),
-              TextField(
+              TextFormField(
                 autocorrect: true,
                 controller: destController,
                 decoration: InputDecoration(
-                labelText: 'Enter destination',
-                contentPadding: new EdgeInsets.fromLTRB(
-                                      10.0, 30.0, 10.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-                ),
+                  fillColor: Colors.lightBlueAccent,
+                  filled: true,
+                  contentPadding: EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  labelText: 'Off to',),
               ),
               
               SizedBox(
                 height: 50,
               ),
-              new Container(
+               Container(
                 child: FutureBuilder(
-                    future: _getDataForSource(),
+                    future: _getDataForSource(sourceController.text,destController.text),
                     builder:(BuildContext context ,AsyncSnapshot snapshot ){
                       if(snapshot.data == null)
                         {
                           return Container(
-                            child: Text("Loading Destinations"),
+                            child: Text("Loading Destinations......"),
                           );
                         }
                       else{
                         return Column(
                           children:<Widget>[
-                            new DropdownButton<String>(
-                              isDense: true,
-                              hint: new Text("Source"),
-                              value: _mySelectionSource,
-                              onChanged: (String newValue) {
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                            5.0, 5.0, 5.0, 5.0),
+                              decoration:BoxDecoration(
+                                color: Colors.lightBlueAccent
+                          ),
+                              child:DropdownButton<String>(
+                                isDense: true,
+                                hint:  Text("Source"),
+                                value: selSubSource,
+                                onChanged: (String value) {
+                                  selSubSource =  value;
+                                  setState(() {
 
-                                setState(() {
-                                  _mySelectionSource = newValue;
-                                  sourceController.text = _mySelectionSource;
-                                });
-
-                                print (_mySelectionSource);
-                              },
-                              items: sources.map((String sourceValue) {                              
-                                return DropdownMenuItem<String>(
-                                  value: sourceValue.toString(),
-                                  child: new Text(
-                                    sourceValue,
-                                  ),
-                                );
-                              }).toList(),
+                                  });
+                                  print (selSubSource);
+                                },
+                                items: sources.map((String sourceValue) {
+                                  return DropdownMenuItem<String>(
+                                    value: sourceValue.toString(),
+                                    child:  Text(
+                                      sourceValue,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             ),
-                            new DropdownButton<String>(
-                              isDense: true,
-                              hint: new Text("Destination"),
-                              value: _mySelectionDest,
-                              onChanged: (String newValue) {
+                             Padding(
+                               padding: EdgeInsets.all(10),
+                             ),
+                             Container(
+                               padding: EdgeInsets.fromLTRB(
+                                   5.0, 5.0, 5.0, 5.0),
+                               decoration:BoxDecoration(
+                                   color: Colors.lightBlueAccent
+                               ),
+                               child: DropdownButton<String>(
+                                 isDense: true,
+                                 hint:  Text("Destination"),
+                                 value: selSubDest,
+                                 onChanged: (String value) {
+                                   selSubDest =  value;
+                                   setState(() {
 
-                                setState(() {
-                                  _mySelectionDest = newValue;
-                                  destController.text = _mySelectionDest;
-                                });
+                                   });
 
-                                print (_mySelectionDest);
-                              },
-                              items: destinations.map((String destValue) {                              
-                                return DropdownMenuItem<String>(
-                                  value: destValue.toString(),
-                                  child: new Text(
-                                    destValue,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                                   print (selSubDest);
+                                 },
+                                 items: destinations.map((String destValue) {
+                                   return DropdownMenuItem<String>(
+                                     value: destValue.toString(),
+                                     child:  Text(
+                                       destValue,
+                                     ),
+                                   );
+                                 }).toList(),
+                               ),
+                             ),
+
+
                           ]
                         );
                       }
@@ -161,9 +182,17 @@ class _SearchRidePageState extends State<SearchRidePage> {
               ),
 
               SizedBox(height: 20,),
-
-              Text('Date of Ride: (${dateformat.pattern})'),
+              Text('Date of Ride'),
               DateTimeField(
+                decoration: InputDecoration(
+                  fillColor: Colors.lightBlueAccent,
+                  filled: true,
+                  contentPadding: EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
                 format: dateformat,
                 onShowPicker: (context, currentValue) {
                 return showDatePicker(
@@ -177,6 +206,15 @@ class _SearchRidePageState extends State<SearchRidePage> {
 
               Text('Time of ride '),
               DateTimeField(
+                decoration: InputDecoration(
+                  fillColor: Colors.lightBlueAccent,
+                  filled: true,
+                  contentPadding: EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
                 format: timeformat,
                 onShowPicker: (context, currentValue) async {
                   final time = await showTimePicker(
@@ -193,7 +231,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                 height: 50,
                 child : RaisedButton(
                   onPressed:goToViewRide,
-                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                   child: Text(
                     "Search Ride",
                     style: TextStyle(color: Colors.white),),
@@ -207,10 +245,22 @@ class _SearchRidePageState extends State<SearchRidePage> {
   }
 
   
-void goToViewRide()
+String goToViewRide()
   {
-    print("Date Verify-----------------------");
-    print(DateTime.parse("${myController3.text} ${timeController.text}"));
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
+    try
+    {
+      print(DateTime.parse("${myController3.text} ${timeController.text}"));
+      Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(selSubSource, selSubDest,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
+    }
+    catch(e)
+    {
+      ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+        return Scaffold(
+            body: Center(
+                child: Text(e)));
+      };
+      print("error");
+    }
+    return e.toString();
   }
 }

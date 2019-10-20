@@ -170,21 +170,14 @@ class _UserHomePageState extends State<UserHomePage> {
 
   }
 
-  void navigateToData()
-  {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> DataPage(),fullscreenDialog: true));
-
-  }
-
-
-void createRide()
+  void createRide()
   {
     Navigator.push(context,MaterialPageRoute(builder: (context)=> NewRidePage(),fullscreenDialog: true));
   }
 
   void navigateToFeedbackPage()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
+//    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
   }
 
   void navigateToTabs()
@@ -194,6 +187,7 @@ void createRide()
 
   void navigateToHome()
   {
+    var result = FirebaseAuth.instance.signOut();
     Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage(),fullscreenDialog: true));
   }
 

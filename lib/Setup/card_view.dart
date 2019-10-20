@@ -3,7 +3,6 @@ import 'package:bbc_login/Setup/userhome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'mailHandler.dart';
 
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -17,9 +16,13 @@ final SourceDest sd;
   
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        home:new MyCard(sd : sd),
-    );
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('View Ride'),
+          //backgroundColor:new Color(0xFF673AB7),
+        ),
+      body:MyCard(sd : sd)
+      );
   }
 }
 class MyCard extends StatelessWidget{
@@ -96,13 +99,11 @@ class MyCard extends StatelessWidget{
         rideDetails.forEach((k ,v) {
             var source = sd.source.toString();
             var dest  = sd.dest.toString();
+
             DateTime date = sd.dateTime;
             DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
-            print("BOOLEAN");
-//            print(date.isBefore(rideDate));
-            print(date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0);
-            print(date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString());
-            if( date.isBefore(rideDate) && source == v["source"] && dest == v["dest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString())
+
+            if(date.isBefore(rideDate) && source == v["subsource"] && dest == v["subdest"] && v["numberofppl"] > 0 && v["driverUid"] != userUid.toString())
             {
               rc+=1;
               var flag = 0;
@@ -114,6 +115,7 @@ class MyCard extends StatelessWidget{
                       flag = 1;
                   }
                 });
+
                 if(flag == 0)
                   {
                     double ratings = 0;
@@ -124,9 +126,7 @@ class MyCard extends StatelessWidget{
                         ratings = n/d;
                       }
 
-
-
-                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
+                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["subsource"],dest:v["subdest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
                     newCards.add(c);
 
                   }
@@ -144,7 +144,7 @@ class MyCard extends StatelessWidget{
                   }
 
 
-                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
+                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["subsource"],dest:v["subdest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,ratings: ratings,);
                   newCards.add(c);
 
                 }
@@ -155,17 +155,12 @@ class MyCard extends StatelessWidget{
         print("newCards");
         print(newCards);
         return newCards;
-        }
+    }
 
   @override
   Widget build(BuildContext context) {
 
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('View Ride'),
-          backgroundColor:new Color(0xFF673AB7),
-        ),
-        body: new Container(
+    return Container(
             child: FutureBuilder(
               future: _getData(),
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -173,12 +168,15 @@ class MyCard extends StatelessWidget{
                 {
                   return Container(
                     child: Center(
-                        child:Text("Please wait wheels are rolling  ....")
-                    ),
+                        child: Container(
+                            child: CircularProgressIndicator(),
+                      alignment: Alignment(0.0, 0.0),
+                ),
+                )
                   );
                 }
                 else {
-                      return new Column(
+                      return Column(
                         children: <Widget>[
                       Card(
                       child: Column(
@@ -192,20 +190,17 @@ class MyCard extends StatelessWidget{
                         ],
                       ),
                 ),
-                          Expanded(
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: snapshot.data,
-                              )
-                          )
-                        ],
-                      );
+                        Expanded(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: snapshot.data,
+                            )
+                        )
+                      ],
+                    );
                 }
               },
             )
-        ),
-
-
     );
   }
 }
@@ -275,47 +270,57 @@ class CustomCard extends StatelessWidget {
                 ),
                 radius: 35,
               ),
-              title: new Text(username + " -------- Rating: " + ratings.toString()),
+              title: new Text(username + "  (" + ratings.toString()  + ")"),
               subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
           new Padding(
-              padding: new EdgeInsets.all(7.0),
+              padding: new EdgeInsets.all(5.0),
               child: new Row(
                 children: <Widget>[
                   new Padding(
-                    padding: new EdgeInsets.all(7.0),
+                    padding: new EdgeInsets.all(5.0),
                   ),
                   new Padding(
-                    padding: new EdgeInsets.all(7.0),
-                    child: new Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: new TextStyle(fontSize: 12.0),),
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.all(7.0),
-                    child: new Text("  Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
+                    padding: new EdgeInsets.all(5.0),
+                    child: new Text("DEPARTURE: "+ time.toString() +"      DATE: " + date.toString() ,style: new TextStyle(fontSize: 12.0,),),
                   ),
                 ],
               ),
 
+
           ),
           new Padding(
-            padding: new EdgeInsets.all(7.0),
+            padding: new EdgeInsets.all(5.0),
             child: new Row(
               children: <Widget>[
                 new Padding(
-                  padding: new EdgeInsets.all(7.0),
+                  padding: new EdgeInsets.all(5.0),
                 ),
                 new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text('From: ' + source,style: new TextStyle(fontSize: 12.0),),
+                  padding: new EdgeInsets.all(5.0),
+                  child: new Text("PRICE: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
+                ),
+              ],
+            ),
+
+
+          ),
+          new Padding(
+            padding: new EdgeInsets.all(5.0),
+            child: new Row(
+              children: <Widget>[
+                new Padding(
+                  padding: new EdgeInsets.all(5.0),
+                  child: new Text('FROM: ' + source,style: new TextStyle(fontSize: 12.0),),
                 ),
                 new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text('To: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
+                  padding: new EdgeInsets.all(5.0),
+                  child: new Text('TO: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
                 ),
                 Spacer(),
                 new Padding(
-                  padding: EdgeInsets.all(7.0),
+                  padding: EdgeInsets.all(5.0),
                   child: Container(
                     child: FutureBuilder(
                       future: _isUser(driveruid),
@@ -341,6 +346,24 @@ class CustomCard extends StatelessWidget {
                 }
                 else {
                       return new Container(
+                        child: new FloatingActionButton(
+                          //heroTag: rideId.toString(),
+                          onPressed:(){
+                            writeBooking(rideId,driveruid,source,dest,date,time,context,numberofppl);
+                            return showDialog(
+                              context: context,
+                              builder: (context) {
+
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text("Booking created!"),
+                                );
+                              },
+                            );
+                          },
+                          child: Text("Book"),
+                        ),
                       );
                 }
               }
@@ -348,26 +371,6 @@ class CustomCard extends StatelessWidget {
                     ),
                   )
                   
-                ),
-                new FloatingActionButton(
-                  //heroTag: rideId.toString(),
-                    onPressed:(){
-                      writeBooking(rideId,driveruid,source,dest,date,time,context,numberofppl);
-                      
-                      
-                      return showDialog(
-                        context: context,
-                        builder: (context) {
-
-                            return AlertDialog(
-                              // Retrieve the text the user has entered by using the
-                              // TextEditingController.
-                              content: Text("Booking created!"),
-                              );
-                            },
-                        );
-                    },
-                    child: Text("Book"),
                 ),
               ],
             ),
@@ -448,7 +451,7 @@ class SourceDest
 {
   String source;
   String dest;
-  DateTime dateTime = DateTime.parse("2019-09-26 10:00:00");
+  DateTime dateTime;
 
   SourceDest(this.source,this.dest,this.dateTime);
 }

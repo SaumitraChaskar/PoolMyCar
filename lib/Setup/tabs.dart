@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:bbc_login/Setup/signin.dart';
+import 'package:email_validator/email_validator.dart';
+
 
 
 class TabPage extends StatefulWidget {
@@ -19,8 +21,7 @@ class _TabPageState extends State<TabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
+    return DefaultTabController(
         length: 2,
         child:Scaffold(
           resizeToAvoidBottomPadding: false,
@@ -36,10 +37,10 @@ class _TabPageState extends State<TabPage> {
             body: TabBarView(
             children: [
                 Scaffold(
-                    resizeToAvoidBottomPadding: false,
-                    appBar: AppBar(
-                      title: Text("Passenger"),
-              ),
+                  resizeToAvoidBottomPadding: false,
+                  appBar: AppBar(
+                    title: Text("Passenger"),
+                  ),
                   body:
                   Form(
                     key: _formkey1,
@@ -54,16 +55,19 @@ class _TabPageState extends State<TabPage> {
                                 if(input.isEmpty) {
                                   return 'Please fill the email';
                                 }
+                                if(EmailValidator.validate(input) == false) {
+                                  return 'Email invalid';
+                                }
                                 return null;
                               } ,
                               onSaved: (input) => _email = input,
-                              decoration: new InputDecoration(
+                              decoration: InputDecoration(
                                   fillColor: Colors.lightBlueAccent,
                                   filled: true,
-                                  contentPadding: new EdgeInsets.fromLTRB(
+                                  contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
-                                  border: new OutlineInputBorder(
-                                    borderRadius: new BorderRadius.circular(12.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Email '),
                         
@@ -77,16 +81,19 @@ class _TabPageState extends State<TabPage> {
                                 if(input.length < 6) {
                                   return 'Password not strong';
                                 }
+                                if(input.length > 20) {
+                                  return 'Password too long please limit';
+                                }
                                 return null;
                               } ,
                               onSaved: (input) => _password = input,
-                              decoration: new InputDecoration(
+                              decoration: InputDecoration(
                                   fillColor: Colors.lightBlueAccent,
                                   filled: true,
-                                  contentPadding: new EdgeInsets.fromLTRB(
+                                  contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
-                                  border: new OutlineInputBorder(
-                                    borderRadius: new BorderRadius.circular(12.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Password '),
                                   obscureText: true,
@@ -102,13 +109,13 @@ class _TabPageState extends State<TabPage> {
                                 return null;
                               } ,
                               onSaved: (input) => _username = input,
-                              decoration: new InputDecoration(
+                              decoration: InputDecoration(
                                   fillColor: Colors.lightBlueAccent,
                                   filled: true,
-                                  contentPadding: new EdgeInsets.fromLTRB(
+                                  contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
-                                  border: new OutlineInputBorder(
-                                    borderRadius: new BorderRadius.circular(12.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Username '),
                             ),
@@ -116,20 +123,21 @@ class _TabPageState extends State<TabPage> {
                           Padding(
                             padding : const EdgeInsets.all(10),
                             child: TextFormField(
+                              keyboardType: TextInputType.number,
                               validator:(input){
-                                if(input.isEmpty) {
-                                  return 'Please fill the contact';
+                                if(input.length != 10) {
+                                  return 'Please enter a valid phone mumber';
                                 }
                                 return null;
                               } ,
                               onSaved: (input) => _contactNo = input,
-                              decoration: new InputDecoration(
+                              decoration: InputDecoration(
                                   fillColor: Colors.lightBlueAccent,
                                   filled: true,
-                                  contentPadding: new EdgeInsets.fromLTRB(
+                                  contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
-                                  border: new OutlineInputBorder(
-                                    borderRadius: new BorderRadius.circular(12.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   labelText: ' Contact No. '),
                             ),
@@ -168,16 +176,19 @@ class _TabPageState extends State<TabPage> {
                                   if(input.isEmpty) {
                                     return 'Please fill the email';
                                   }
+                                  if(EmailValidator.validate(input) == false) {
+                                    return 'Email invalid';
+                                  }
                                   return null;
                                 } ,
                                 onSaved: (input) => _email = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Email '),
                               ),
@@ -190,16 +201,19 @@ class _TabPageState extends State<TabPage> {
                                   if(input.length < 6) {
                                     return 'Password not strong';
                                   }
+                                  if(input.length > 20) {
+                                    return 'Password too long please limit';
+                                  }
                                   return null;
                                 } ,
                                 onSaved: (input) => _password = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Password '),
                                 obscureText: true,
@@ -215,13 +229,13 @@ class _TabPageState extends State<TabPage> {
                                   return null;
                                 } ,
                                 onSaved: (input) => _username = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Username '),
                               ),
@@ -229,20 +243,24 @@ class _TabPageState extends State<TabPage> {
                             Padding(
                               padding : const EdgeInsets.all(10),
                               child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                 validator:(input){
                                   if(input.isEmpty) {
                                     return "Enter contact number";
                                   }
+                                  if(input.length != 10) {
+                                    return "Invalid Contact";
+                                  }
                                   return null;
                                 } ,
                                 onSaved: (input) => _contactNo = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Contact No. '),
                               ),
@@ -257,13 +275,13 @@ class _TabPageState extends State<TabPage> {
                                   return null;
                                 } ,
                                 onSaved: (input) => _licenseNo = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' License Id. '),
                               ),
@@ -279,13 +297,13 @@ class _TabPageState extends State<TabPage> {
                                   return null;
                                 } ,
                                 onSaved: (input) => _carRegNo = input,
-                                decoration: new InputDecoration(
+                                decoration: InputDecoration(
                                     fillColor: Colors.lightBlueAccent,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.fromLTRB(
+                                    contentPadding: EdgeInsets.fromLTRB(
                                         10.0, 30.0, 10.0, 10.0),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: new BorderRadius.circular(12.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     labelText: ' Car Registration No. '),
                               ),
@@ -307,8 +325,7 @@ class _TabPageState extends State<TabPage> {
             ],
           ),
         ),
-      )
-    );
+      );
   }
 
 
