@@ -1,20 +1,13 @@
-import 'package:bbc_login/Setup/card_view.dart';
+
 import 'package:bbc_login/Setup/userhome.dart';
 import 'package:bbc_login/Setup/userrides.dart';
 import 'package:flutter/material.dart';
 
-class UserPage extends StatefulWidget {
-  @override
-  _UserPageState createState() => _UserPageState();
-}
-
-class _UserPageState extends State<UserPage> {
+class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return new MaterialApp(
-      color: Colors.yellow,
-      home: DefaultTabController(
+    return Scaffold(
+      body: DefaultTabController(
         length: 3,
         child: new Scaffold(
           body: TabBarView(
@@ -22,21 +15,17 @@ class _UserPageState extends State<UserPage> {
               new Container(
                 child: new UserHomePage(),
               ),
-              new Container(
-                child:Scaffold(
-                  appBar: AppBar(
-                    title: Text("My Rides")
-                  ),
-                  body: UserRideDataPage(),
-              ),
-              ),
-              new Container(  
-                child:Scaffold(
-                  appBar: AppBar(
-                      title: Text("My Profile")
-                  ),
-                  body: new Icon(Icons.perm_contact_calendar),
+              Scaffold(
+                appBar: AppBar(
+                  title: Text("My Rides")
                 ),
+                body: MyCard()
+              ),
+              Scaffold(
+                appBar: AppBar(
+                    title: Text("My Profile")
+                ),
+                body: new Icon(Icons.perm_contact_calendar)
               ),
             ],
           ),

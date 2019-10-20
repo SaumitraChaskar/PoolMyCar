@@ -17,9 +17,13 @@ final SourceDest sd;
   
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        home:new MyCard(sd : sd),
-    );
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('View Ride'),
+          //backgroundColor:new Color(0xFF673AB7),
+        ),
+      body:MyCard(sd : sd)
+      );
   }
 }
 class MyCard extends StatelessWidget{
@@ -61,11 +65,6 @@ class MyCard extends StatelessWidget{
 
         FirebaseUser user = await FirebaseAuth.instance.currentUser();
         var userUid = user.uid;
-
-
-
-
-
         var rideDetails = data['rides'];
 
         List<CustomCard> newCards = [];
@@ -87,16 +86,17 @@ class MyCard extends StatelessWidget{
                       flag = 1;
                   }
                 });
+
                 if(flag == 0)
                   {
-                    CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+                    CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
                     newCards.add(c);
 
                   }
               }
               else
                 {
-                  CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+                  CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
                   newCards.add(c);
                 }
             }
@@ -104,17 +104,12 @@ class MyCard extends StatelessWidget{
 
         );
         return newCards;
-        }
+    }
 
   @override
   Widget build(BuildContext context) {
 
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('View Ride'),
-          backgroundColor:new Color(0xFF673AB7),
-        ),
-        body: new Container(
+    return Container(
             child: FutureBuilder(
               future: _getData(),
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -127,7 +122,7 @@ class MyCard extends StatelessWidget{
                   );
                 }
                 else {
-                      return new Column(
+                      return Column(
                         children: <Widget>[
                       Card(
                       child: Column(
@@ -141,20 +136,17 @@ class MyCard extends StatelessWidget{
                         ],
                       ),
                 ),
-                          Expanded(
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: snapshot.data,
-                              )
-                          )
-                        ],
-                      );
+                        Expanded(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: snapshot.data,
+                            )
+                        )
+                      ],
+                    );
                 }
               },
             )
-        ),
-
-
     );
   }
 }
@@ -410,7 +402,7 @@ class SourceDest
 {
   String source;
   String dest;
-  DateTime dateTime = DateTime.parse("2019-09-26 10:00:00");
+  DateTime dateTime = DateTime.parse("2019-10-05 10:00:00");
 
   SourceDest(this.source,this.dest,this.dateTime);
 }

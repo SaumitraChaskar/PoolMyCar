@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class FindRidePage extends StatefulWidget {
 
@@ -53,8 +50,8 @@ class FindRidePageState extends State<FindRidePage> {
     }
 
 
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         title: Text("PoolMyCar"),
       ),
         body: Container(
@@ -107,9 +104,9 @@ class FindRidePageState extends State<FindRidePage> {
     );
   },
 ),
-              new DropdownButton<String>(
+             DropdownButton<String>(
                 isDense: true,
-                hint: new Text("Select"),
+                hint: Text("Select"),
                 value: _mySelection,
                 onChanged: (String newValue) {
 
@@ -120,9 +117,9 @@ class FindRidePageState extends State<FindRidePage> {
                   print (_mySelection);
                 },
                 items: _myJson.map((Map map) {
-                  return new DropdownMenuItem<String>(
+                  return DropdownMenuItem<String>(
                     value: map["id"].toString(),
-                    child: new Text(
+                    child: Text(
                       map["name"],
                     ),
                   );

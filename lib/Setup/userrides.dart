@@ -6,7 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
 
-class UserRideDataPage extends StatelessWidget {
+/*class UserRideDataPage extends StatelessWidget {
 
 
   // This widget is the root of your application.
@@ -18,9 +18,9 @@ class UserRideDataPage extends StatelessWidget {
       home:new MyCard(),
     );
   }
-}
-class MyCard extends StatelessWidget{
+}*/
 
+class MyCard extends StatelessWidget{
 
   MyCard({Key key,}) : super(key: key);
 
@@ -47,7 +47,7 @@ class MyCard extends StatelessWidget{
 
     print("Inside2");
 
-    var carOwnerDetails = new Map();
+    var carOwnerDetails = Map();
 
     dataCarowner.forEach((k ,v){
       carOwnerDetails[k] = v["username"];
@@ -81,7 +81,7 @@ class MyCard extends StatelessWidget{
             print("tffff"+ (value.toString() == userUid.toString()).toString());
             if(value.toString() == userUid.toString())
             {
-              CustomCard c = new CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+              CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
               newCards.add(c);
             }
           });
@@ -102,7 +102,7 @@ class MyCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return new Container(
+    return Container(
           child: FutureBuilder(
             future: _getData(),
             builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -115,7 +115,7 @@ class MyCard extends StatelessWidget{
                 );
               }
               else {
-                return new Column(
+                return Column(
                   children: <Widget>[
                     Card(
                       child: Column(
@@ -196,56 +196,56 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context)  {
-    return  new Card(
-      child: new Column(
+    return  Card(
+      child: Column(
         children: <Widget>[
-          new ListTile(
+          ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(
                   "https://img.icons8.com/bubbles/50/000000/user.png",
                 ),
                 radius: 35,
               ),
-              title: new Text(username),
+              title: Text(username),
               subtitle: Text("Pref : " + preferences)
           ),
 //         new Image.network("https://img.icons8.com/bubbles/50/000000/user.png"),
-          new Padding(
-            padding: new EdgeInsets.all(7.0),
-            child: new Row(
+          Padding(
+            padding: EdgeInsets.all(7.0),
+            child: Row(
               children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
                 ),
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: new TextStyle(fontSize: 12.0),),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Text("Departure: "+ time.toString() +"      Date: " + date.toString() ,style: TextStyle(fontSize: 12.0),),
                 ),
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text("  Ride Price: "+ pricepp.toString(),style: new TextStyle(fontSize: 12.0)),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Text("  Ride Price: "+ pricepp.toString(),style: TextStyle(fontSize: 12.0)),
                 ),
               ],
             ),
 
           ),
-          new Padding(
-            padding: new EdgeInsets.all(7.0),
-            child: new Row(
+          Padding(
+            padding: EdgeInsets.all(7.0),
+            child: Row(
               children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
                 ),
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text('From: ' + source,style: new TextStyle(fontSize: 12.0),),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Text('From: ' + source,style: TextStyle(fontSize: 12.0),),
                 ),
-                new Padding(
-                  padding: new EdgeInsets.all(7.0),
-                  child: new Text('To: ' + dest.toString(),style: new TextStyle(fontSize: 12.0)),
+                Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Text('To: ' + dest.toString(),style: TextStyle(fontSize: 12.0)),
                 ),
                 Spacer(),
-                new Padding(
+                Padding(
                     padding: EdgeInsets.all(7.0),
                     child: Container(
                       child: FutureBuilder(
@@ -272,7 +272,7 @@ class CustomCard extends StatelessWidget {
                               );
                             }
                             else {
-                              return new Container(
+                              return Container(
                               );
                             }
                           }
@@ -281,7 +281,7 @@ class CustomCard extends StatelessWidget {
                     )
 
                 ),
-                new FloatingActionButton(
+                FloatingActionButton(
                   //heroTag: rideId.toString(),
                   onPressed:(){
                     deleteBooking(rideId);

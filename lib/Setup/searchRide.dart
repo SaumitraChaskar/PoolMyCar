@@ -1,5 +1,4 @@
 
-import 'package:date_format/date_format.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -78,7 +77,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                 controller: sourceController,
                 decoration: InputDecoration(
                 labelText: 'Enter starting point',
-                contentPadding: new EdgeInsets.fromLTRB(
+                contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
                 ),
@@ -90,7 +89,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                 controller: destController,
                 decoration: InputDecoration(
                 labelText: 'Enter destination',
-                contentPadding: new EdgeInsets.fromLTRB(
+                contentPadding: EdgeInsets.fromLTRB(
                                       10.0, 30.0, 10.0, 10.0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
                 ),
@@ -99,7 +98,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
               SizedBox(
                 height: 50,
               ),
-              new Container(
+               Container(
                 child: FutureBuilder(
                     future: _getDataForSource(),
                     builder:(BuildContext context ,AsyncSnapshot snapshot ){
@@ -112,9 +111,9 @@ class _SearchRidePageState extends State<SearchRidePage> {
                       else{
                         return Column(
                           children:<Widget>[
-                            new DropdownButton<String>(
+                             DropdownButton<String>(
                               isDense: true,
-                              hint: new Text("Source"),
+                              hint:  Text("Source"),
                               value: _mySelectionSource,
                               onChanged: (String newValue) {
 
@@ -128,15 +127,15 @@ class _SearchRidePageState extends State<SearchRidePage> {
                               items: sources.map((String sourceValue) {                              
                                 return DropdownMenuItem<String>(
                                   value: sourceValue.toString(),
-                                  child: new Text(
+                                  child:  Text(
                                     sourceValue,
                                   ),
                                 );
                               }).toList(),
                             ),
-                            new DropdownButton<String>(
+                             DropdownButton<String>(
                               isDense: true,
-                              hint: new Text("Destination"),
+                              hint:  Text("Destination"),
                               value: _mySelectionDest,
                               onChanged: (String newValue) {
 
@@ -150,7 +149,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                               items: destinations.map((String destValue) {                              
                                 return DropdownMenuItem<String>(
                                   value: destValue.toString(),
-                                  child: new Text(
+                                  child:  Text(
                                     destValue,
                                   ),
                                 );
@@ -196,7 +195,7 @@ class _SearchRidePageState extends State<SearchRidePage> {
                 height: 50,
                 child : RaisedButton(
                   onPressed:goToViewRide,
-                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                   child: Text(
                     "Search Ride",
                     style: TextStyle(color: Colors.white),),
