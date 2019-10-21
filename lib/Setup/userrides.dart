@@ -21,13 +21,30 @@ import 'package:firebase_database/firebase_database.dart';
   }
 }*/
 
-class MyCard extends StatelessWidget{
+class MyCard extends StatefulWidget{
 
   MyCard({Key key,}) : super(key: key);
 
-  final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
   static final databaseReference = FirebaseDatabase.instance.reference();
   static int numRides = 0;
+
+  @override
+  _MyCardState createState() => _MyCardState();
+}
+
+class _MyCardState extends State<MyCard> with AutomaticKeepAliveClientMixin<MyCard>{
+  final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Future<List<CustomCard>> _rideList;
+  @override
+  void initState(){
+    _rideList = _getData();
+    super.initState();
+  }
+
 
   Future<List<CustomCard>> _getData() async{
     print("Inside");
@@ -37,7 +54,7 @@ class MyCard extends StatelessWidget{
 
     print("Inside1");
 
-    await databaseReference.once().then((DataSnapshot snapshot) {
+    await MyCard.databaseReference.once().then((DataSnapshot snapshot) {
       data = snapshot.value;
     });
 
@@ -98,7 +115,7 @@ class MyCard extends StatelessWidget{
 
     return Container(
           child: FutureBuilder(
-            future: _getData(),
+            future: _rideList,
             builder:(BuildContext context ,AsyncSnapshot snapshot ){
               if(snapshot.data == null)
               {

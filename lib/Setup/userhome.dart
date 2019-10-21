@@ -24,9 +24,21 @@ class UserHomePage extends StatefulWidget {
 }
 
 
-class _UserHomePageState extends State<UserHomePage> {
+class _UserHomePageState extends State<UserHomePage> with AutomaticKeepAliveClientMixin<UserHomePage>{
 
   static String username = "";
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Future<int> _isCarOwner;
+
+  @override
+  void initState(){
+    _isCarOwner = _checkIfCarOwner();
+    super.initState();
+  }
+  
 
   void  _getDataUser() async{
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -87,7 +99,7 @@ class _UserHomePageState extends State<UserHomePage> {
                   children: <Widget>[
                     Container(
                       child: FutureBuilder(
-                        future: _checkIfCarOwner(),
+                        future: _isCarOwner,
                         builder: (BuildContext context, AsyncSnapshot snapshot){
                           if(snapshot.data == 0)
                           {
@@ -184,8 +196,11 @@ class _UserHomePageState extends State<UserHomePage> {
 
   void navigateToHome()
   {
-    var result = FirebaseAuth.instance.signOut();
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage(),fullscreenDialog: true));
+    var result = FirebaseAuth.instance.signOut().whenComplete((){
+      Navigator.pop(context);
+    });
+    //Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage(),fullscreenDialog: true));
+    
   }
 
 }

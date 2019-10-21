@@ -6,13 +6,12 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'mailHandler.dart';
 
-//import 'package:flutter_email_sender/flutter_email_sender.dart';
+
 
 class CardViewDataPage extends StatelessWidget {
 
 final SourceDest sd;
 
-  // This widget is the root of your application.
   CardViewDataPage({Key key,@required this.sd}) : super(key: key);
   
   @override
@@ -163,8 +162,12 @@ class MyCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-            child: FutureBuilder(
+    return Scaffold(
+            appBar: AppBar(
+              title: Text('View Ride'),
+              //backgroundColor:new Color(0xFF673AB7),
+            ),
+            body: FutureBuilder(
               future: _getData(),
               builder:(BuildContext context ,AsyncSnapshot snapshot ){
                 if(snapshot.data == null)

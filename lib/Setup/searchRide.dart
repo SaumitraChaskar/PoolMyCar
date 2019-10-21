@@ -212,7 +212,7 @@ String goToViewRide()
     try
     {
       print(DateTime.parse("${myController3.text} ${timeController.text}"));
-      Navigator.push(context,MaterialPageRoute(builder: (context)=> CardViewDataPage(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
+      Navigator.push(context,MaterialPageRoute(builder: (context)=> MyCard(sd: SourceDest(sourceController.text, destController.text,DateTime.parse("${myController3.text} ${timeController.text}"))),fullscreenDialog: true));
     }
     catch(e)
     {

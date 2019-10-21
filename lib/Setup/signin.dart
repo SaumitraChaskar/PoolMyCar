@@ -1,7 +1,10 @@
 import 'package:bbc_login/Setup/userpage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
+
+import 'UserAccount.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -91,14 +94,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  
+
   Future<void> signIn() async{
     final formstate = _formkey.currentState;
     if(formstate.validate() == true){
       formstate.save();
       try
       {
-        AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(context,MaterialPageRoute(builder: (context)=> UserPage()));
+        AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)
+        .then((AuthResult result){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> UserPage(result.user.uid)));
+        });
       }
       catch(e)
       {

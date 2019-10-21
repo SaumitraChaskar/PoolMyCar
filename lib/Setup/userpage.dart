@@ -1,9 +1,21 @@
 
+
+import 'package:bbc_login/Setup/UserAccount.dart';
 import 'package:bbc_login/Setup/userhome.dart';
+import 'package:bbc_login/Setup/userprofile.dart';
 import 'package:bbc_login/Setup/userrides.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatelessWidget {
+
+  String uid;
+  
+  UserPage(String uid){
+    this.uid = uid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +37,7 @@ class UserPage extends StatelessWidget {
                 appBar: AppBar(
                     title: Text("My Profile")
                 ),
-                body: new Icon(Icons.perm_contact_calendar)
+                body: UserProfile(this.uid)
               ),
             ],
           ),
