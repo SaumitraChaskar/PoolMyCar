@@ -90,7 +90,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   void navigateToFeedbackPage()
   {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
+//    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(),fullscreenDialog: true));
   }
 
   void navigateToTabs()

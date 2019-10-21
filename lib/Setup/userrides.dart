@@ -1,4 +1,3 @@
-
 import 'package:bbc_login/Setup/feedback.dart';
 import 'package:bbc_login/Setup/userhome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_database/firebase_database.dart';
 
   // This widget is the root of your application.
   UserRideDataPage({Key key,}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -94,14 +92,20 @@ class _MyCardState extends State<MyCard> with AutomaticKeepAliveClientMixin<MyCa
           passengers.forEach((key,value){
             if(value.toString() == userUid.toString())
             {
-              CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k);
+              int cr = 1;
+
+              DateTime rideDate = DateTime.parse(v["date"] + " " + v["time"]);
+
+              if(rideDate.isAfter(DateTime.now()))
+                {
+                  cr = 0;
+                }
+
+              CustomCard c = CustomCard(username :carOwnerDetails[v["driverUid"]],preferences:v["preferences"],time:v["time"],pricepp:v["pricepp"],source:v["source"],dest:v["dest"],driveruid:v["driverUid"],numberofppl:v["numberofppl"],date:v["date"],rideId:k,canrate:cr);
               newCards.add(c);
             }
           });
         }
-
-
-
       }
       print("HHEHH");
       }
@@ -168,6 +172,7 @@ class CustomCard extends StatelessWidget {
     this.driveruid,
     this.numberofppl,
     this.date,
+    this.canrate
   });
 
   final String username;
@@ -181,8 +186,34 @@ class CustomCard extends StatelessWidget {
   final int numberofppl;
   final String rideId;
   String user;
+  int canrate;
 
-  Future<int> _isUser() async{
+  Future<int> _isUser(carOwnerId) async{
+
+    // final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
+    // var dataCarOwner;
+    // await databaseReferenceCarOwner.once().then((DataSnapshot snapshot) {
+    //   dataCarOwner = snapshot.value;
+    // });
+
+
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    //var userUid = user.uid;
+    //var flag = 0;
+    // dataCarOwner.forEach((k,v){
+    //   if(userUid.toString() == k.toString()){
+    //     flag = 1;
+    //   }
+    // });
+
+    if(carOwnerId == user.uid.toString()){
+      return 1;
+    }
+
+    return 0;
+
+  }
+  Future<int> _canCancel() async{
 
     final databaseReferenceCarOwner = FirebaseDatabase.instance.reference().child("carowner");
     var dataCarOwner;
@@ -203,6 +234,8 @@ class CustomCard extends StatelessWidget {
     return flag;
 
   }
+
+
 
 
 
@@ -269,7 +302,7 @@ class CustomCard extends StatelessWidget {
                     padding: EdgeInsets.all(7.0),
                     child: Container(
                       child: FutureBuilder(
-                          future: _isUser(),
+                          future: _isUser(driveruid),
                           builder:(BuildContext context ,AsyncSnapshot snapshot ){
                             if(snapshot.data == 1)
                             {
@@ -277,17 +310,32 @@ class CustomCard extends StatelessWidget {
                                 children: <Widget>[
                                   RaisedButton(
                                     onPressed:(){
-                                      deleteRide(rideId);
-                                      return showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            // Retrieve the text the user has entered by using the
-                                            // TextEditingController.
-                                            content: Text("Deleted ride!"),
-                                          );
-                                        },
-                                      );
+                                      //deleteRide(rideId);
+                                      return showDialog(context: context, 
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Please confirm if you want create ride')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => _confirmResultForDeleteRide(true,context),
+            child: Text('confirm'),
+          ),
+          FlatButton(
+            onPressed: () => _confirmResultForDeleteRide(false, context),
+            child: Text('cancel'),
+          )
+
+        ],
+      );
+      });
                                     },
                                     child: Text("Delete"),
                                   ),
@@ -309,21 +357,38 @@ class CustomCard extends StatelessWidget {
                     )
 
                 ),
+                if(canrate == 0)
                 FloatingActionButton(
                   //heroTag: rideId.toString(),
                   heroTag: rideId + "1",
                   onPressed:(){
-                    deleteBooking(rideId);
-                    return showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: Text("Your booking has been deleted!"),
-                        );
-                      },
-                    );
                     
-                  },
+                    return showDialog(context: context, 
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Please confirm if you want Cancel Booking')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => _confirmResultForCancelBooking(true,context),
+            child: Text('confirm'),
+          ),
+          FlatButton(
+            onPressed: () => _confirmResultForCancelBooking(false, context),
+            child: Text('No'),
+          )
+
+        ],
+      );
+      });
+                                    },
                   child: Text("Cancel"),
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
@@ -348,15 +413,15 @@ class CustomCard extends StatelessWidget {
 
                   ),
                 ),
-                FloatingActionButton(
-                  heroTag: rideId + "2",
-                  //heroTag: rideId.toString(),
-                  onPressed:(){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(rideId : rideId),fullscreenDialog: true));
-                  },
-                  child: Text("Rate!"),
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
+                if(canrate == 1)
+                  FloatingActionButton(
+                    heroTag: rideId + "2",
+                    onPressed:(){
+                      Navigator.push(context,MaterialPageRoute(builder: (context)=> FeedbackPage(rideId : rideId),fullscreenDialog: true));
+                      },
+                      child: Text("Rate!"),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
                 ),
               ],
             ),
@@ -369,6 +434,17 @@ class CustomCard extends StatelessWidget {
 
   }
 
+_confirmResultForCancelBooking(bool isTrue, BuildContext context) {
+    if (isTrue) {
+deleteBooking(rideId);
+      Navigator.pop(context);
+      final snackBar =
+          new SnackBar(content: new Text('Your Booking has been cancelled!'));
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      Navigator.pop(context);
+    }
+  }
   Future writeBooking(rideId,driveruid,source,dest,date,time,BuildContext context,numberofppl) async {
 
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -402,20 +478,6 @@ class CustomCard extends StatelessWidget {
         });
 
         print(numberofppl);
-
-//        String body = "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ";
-//        var url = 'mailto:$mailId?subject=Ride Booking notification &body=$body';
-//        await launch(url);
-//        print("email sent ");
-
-//        final Email email = Email(
-//          body: "A ride has been booked against your ride $rideId &from $source to $dest \n Dated: $date -- $time ",
-//          subject: 'Ride Notification',
-//          recipients: [mailId],
-//        );
-//        print("Here");
-//        await FlutterEmailSender.send(email);
-//        print("sent");
       }
     });
     Navigator.push(context,MaterialPageRoute(builder: (context)=> UserHomePage(),fullscreenDialog: true));
@@ -470,18 +532,22 @@ class CustomCard extends StatelessWidget {
             });
           }
         }
-        //var passenger_in_ride;
-        //final ind = FirebaseDatabase.instance.reference().child("rides").child(ride).child("passengers").equalTo(user);
-        //print(ind);
-      //  await ind.once().then((DataSnapshot snapshot) {
-      //     passenger_in_ride = snapshot.value;
-      //  });
-
-      //  print(passenger_in_ride);
 
     });
     }
 
+  }
+
+  void _confirmResultForDeleteRide(bool isTrue, BuildContext context) {
+    if (isTrue) {
+      deleteRide(rideId);
+      Navigator.pop(context);
+      final snackBar =
+          new SnackBar(content: new Text('Your Ride has been created!'));
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      Navigator.pop(context);
+    }
   }
 
 
@@ -505,9 +571,7 @@ class SourceDest
 {
   String source;
   String dest;
-  DateTime dateTime = DateTime.parse("2019-09-26 10:00:00");
+  DateTime dateTime;
 
   SourceDest(this.source,this.dest,this.dateTime);
 }
-
-

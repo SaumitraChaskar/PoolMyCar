@@ -22,10 +22,13 @@ class NewRidePageState extends State<NewRidePage> {
   final timeController = TextEditingController();
   final countController = TextEditingController();
   final preferenceController = TextEditingController();
+  final subSourceController = TextEditingController();
+  final subDestinationController = TextEditingController();
   final priceppController = TextEditingController();
   final dateformat = DateFormat("yyyy-MM-dd");
   final timeformat = DateFormat("HH:mm");
 
+  final GlobalKey<ScaffoldState> _globalKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -38,6 +41,8 @@ class NewRidePageState extends State<NewRidePage> {
     preferenceController.addListener(_printLatestValue);
     priceppController.addListener(_printLatestValue);
     timeController.addListener(_printLatestValue);
+    subSourceController.addListener(_printLatestValue);
+    subDestinationController.addListener(_printLatestValue);
   }
 
     _printLatestValue() {
@@ -56,6 +61,8 @@ class NewRidePageState extends State<NewRidePage> {
     preferenceController.dispose();
     priceppController.dispose();
     timeController.dispose();
+    subSourceController.addListener(_printLatestValue);
+    subDestinationController.addListener(_printLatestValue);
     super.dispose();
   }
 
@@ -67,6 +74,7 @@ class NewRidePageState extends State<NewRidePage> {
       ),
       body: Container(
       padding: EdgeInsets.all(25.0),
+      key: _globalKey,
       child: SingleChildScrollView(
         
         child: Column(
@@ -77,10 +85,12 @@ class NewRidePageState extends State<NewRidePage> {
           TextFormField(
             autofocus: false,
             decoration: InputDecoration(
-          labelText: 'Enter starting point',
-          contentPadding: new EdgeInsets.fromLTRB(
-                                10.0, 30.0, 10.0, 10.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              fillColor: Colors.blueAccent,
+              filled: true,
+              contentPadding: new EdgeInsets.fromLTRB(
+                  10.0, 30.0, 10.0, 10.0),
+          labelText: 'Enter source',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
           ),
           validator: (value) {
           if (value.isEmpty) {
@@ -92,39 +102,73 @@ class NewRidePageState extends State<NewRidePage> {
 
 )),
           new Padding(
+              padding: EdgeInsets.all(10.0),
+              child:
+              TextFormField(
+                autofocus: false,
+                decoration: InputDecoration(
+                  fillColor: Colors.blueAccent,
+                  filled: true,
+                  contentPadding: new EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                  labelText: 'Source Locality',
+                  border:OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                ),
+                controller: subSourceController,
+              )),
+          new Padding(
             padding: EdgeInsets.all(10.0),
             child:
           TextFormField(
             autofocus: false,
             decoration: InputDecoration(
+              fillColor: Colors.green,
+              filled: true,
+              contentPadding: new EdgeInsets.fromLTRB(
+                  10.0, 30.0, 10.0, 10.0),
           labelText: 'Enter destination',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0), gapPadding: 30.0 ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), gapPadding: 30.0 ),
           ),
           validator: (input) {
           if (input.isEmpty) {
             return 'Please enter some text';
           }
           return null;
-  },
-  controller: myController2,
-)),
+            },
+            controller: myController2,
+            )),
+          new Padding(
+              padding: EdgeInsets.all(10.0),
+              child:
+              TextFormField(
+                autofocus: false,
+                decoration: InputDecoration(
+                  fillColor: Colors.green,
+                  filled: true,
+                  contentPadding: new EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                  labelText: 'Destination Locality',
+                  border:OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                ),
+                controller: subDestinationController,
+              )),
 
-Text('Date of Ride: (${dateformat.pattern})'),
-DateTimeField(
-  format: dateformat,
-  onShowPicker: (context, currentValue) {
-  return showDatePicker(
-    context: context,
-    firstDate: DateTime(1900),
-    initialDate: currentValue ?? DateTime.now(),
-    lastDate: DateTime(2100));
-    },
-    controller: myController3,
-  ),
-      Text('Time of ride : (${timeformat.pattern})'),
-      DateTimeField(
-        format: timeformat,
-        onShowPicker: (context, currentValue) async {
+            Text('Date of ride'),
+            DateTimeField(
+            format: dateformat,
+            onShowPicker: (context, currentValue) {
+            return showDatePicker(
+            context: context,
+                firstDate: DateTime.now().subtract(Duration(days: 1)),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days:30)));
+          },
+            controller: myController3,
+            ),
+            Text('Time of ride'),
+            DateTimeField(
+          format: timeformat,
+          onShowPicker: (context, currentValue) async {
           final time = await showTimePicker(
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
@@ -135,49 +179,59 @@ DateTimeField(
       ),
 
   
-      new Padding(
-        padding: EdgeInsets.all(10.0),
-        child: TextFormField(
-            autofocus: false,
+            new Padding(
+              padding: EdgeInsets.all(10.0),
+                child: TextFormField(
+                autofocus: false,
                 //controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter.digitsOnly
-            ],
-            decoration: InputDecoration(
-            labelText:"Number of passengers",
-            border:OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)), 
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter.digitsOnly
+              ],
+                  decoration: InputDecoration(
+                    fillColor: Colors.lightBlueAccent,
+                    filled: true,
+                    contentPadding: new EdgeInsets.fromLTRB(
+                        10.0, 30.0, 10.0, 10.0),
+                  labelText:"Number of passengers",
+                  border:OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
             //hintText: "whatever you want",
         //icon: Icon(Icons.phone_iphone)
         ),
-    controller: countController,
-    )),
-      new Padding(
-        padding: EdgeInsets.all(10.0),
-        child:
-          TextFormField(
+          controller: countController,
+          )),
+            new Padding(
+            padding: EdgeInsets.all(10.0),
+              child:
+              TextFormField(
                   autofocus: false,
                   decoration: InputDecoration(
-                labelText: 'Preferences',
-                border:OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+                    fillColor: Colors.lightBlueAccent,
+                    filled: true,
+                    contentPadding: new EdgeInsets.fromLTRB(
+                        10.0, 30.0, 10.0, 10.0),
+                  labelText: 'Preferences',
+                  border:OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
                 ),
         controller: preferenceController,
       )),
-      new Padding(
-        padding: EdgeInsets.all(10.0),
-          child:
-          TextFormField(
-            autofocus: false,
+            new Padding(
+              padding: EdgeInsets.all(10.0),
+              child:
+                TextFormField(
+                autofocus: false,
                 //controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter.digitsOnly
-            ],
-            decoration: InputDecoration(
-            labelText:"Price per passenger", 
-            border:OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-            //hintText: "whatever you want",
-        //icon: Icon(Icons.phone_iphone)
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter.digitsOnly
+              ],
+                decoration: InputDecoration(
+                  fillColor: Colors.lightBlueAccent,
+                  filled: true,
+                  contentPadding: new EdgeInsets.fromLTRB(
+                      10.0, 30.0, 10.0, 10.0),
+                labelText:"Price per passenger",
+              border:OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
     controller: priceppController,
     )),
@@ -186,21 +240,47 @@ DateTimeField(
         height: 50,
         child : RaisedButton(
           onPressed:(){
-          writeRide();
-          return showDialog(
-            context: context,
-            builder: (context) {
-            return AlertDialog(
-              // Retrieve the text the user has entered by using the
-              // TextEditingController.
-              content: Text("Ride created!"),
-        );
-        },
+            return showDialog(context: context, 
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Please confirm if you want create ride')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => _confirmResult(true,context),
+            child: Text('confirm'),
+          ),
+          FlatButton(
+            onPressed: () => _confirmResult(false, context),
+            child: Text('cancel'),
+          )
+
+        ],
       );
+    }
+    );
+      //       writeRide();
+      //     return showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //       return AlertDialog(
+      //         // Retrieve the text the user has entered by using the
+      //         // TextEditingController.
+      //         content: Text("Ride created!"),
+      //   );
+      //   },
+      // );
       },
-        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-        child: Text('Create',
-        style: TextStyle(color: Colors.white),),
+        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
+                  child: Text('Create',
+                  style: TextStyle(color: Colors.white),),
         ),
       ),
 
@@ -224,11 +304,29 @@ DateTimeField(
       'pricepp': int.parse(priceppController.text),
       'preferences':preferenceController.text,
       'rideId':k,
+      'subsource':subSourceController.text,
+      'subdest':subDestinationController.text,
     });
 
     DBRef.child("carowner").child(user.uid).child("rides").set({
       'rideid': k, 
     });
     print(DBRef);
+  }
+
+  _confirmResult(bool isTrue, BuildContext context){
+    
+      if(isTrue){
+        writeRide();
+        Navigator.pop(context);
+        final snackBar = new SnackBar(
+        content: new Text('Your Ride has been created!')
+        );
+          Scaffold.of(context).showSnackBar(snackBar);
+        }
+      else{
+          Navigator.pop(context);
+
+      }
   }
 }

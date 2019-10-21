@@ -110,7 +110,32 @@ class _LoginPageState extends State<LoginPage> {
       catch(e)
       {
         print(e.message);
+        return showDialog(context: context, 
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Password Incorrect'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Please Retype your password')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('ok'),
+          )
+        ],
+      );
+    }
+    );
       }
     }
+    else{
+      
+    }
+
   }
 }

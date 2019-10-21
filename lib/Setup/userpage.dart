@@ -1,12 +1,11 @@
-
-
-import 'package:bbc_login/Setup/UserAccount.dart';
 import 'package:bbc_login/Setup/userhome.dart';
 import 'package:bbc_login/Setup/userprofile.dart';
 import 'package:bbc_login/Setup/userrides.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+import 'Show_ride_plus_booking.dart';
 
 class UserPage extends StatelessWidget {
 
@@ -27,11 +26,14 @@ class UserPage extends StatelessWidget {
               new Container(
                 child: new UserHomePage(),
               ),
-              Scaffold(
-                appBar: AppBar(
-                  title: Text("My Rides")
-                ),
-                body: MyCard()
+              new Container(
+                child:Scaffold(
+                  appBar: AppBar(
+                    title: Text("My Rides")
+                  ),
+                  body: //UserRideDataPage(),
+                  DriverViewPage(),
+              ),
               ),
               Scaffold(
                 appBar: AppBar(
